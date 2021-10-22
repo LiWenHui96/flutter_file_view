@@ -9,9 +9,11 @@ import 'package:path_provider/path_provider.dart';
 
 import 'page_file_view.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -19,7 +21,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomePage(),
     );
@@ -27,6 +29,8 @@ class _MyAppState extends State<MyApp> {
 }
 
 class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -111,9 +115,12 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               height: 50,
               alignment: Alignment.center,
-              margin: EdgeInsets.only(top: 8.0),
+              margin: const EdgeInsets.only(top: 8.0),
               color: Theme.of(context).primaryColor,
-              child: Text(fileShowText, style: TextStyle(color: Colors.white)),
+              child: Text(
+                fileShowText,
+                style: const TextStyle(color: Colors.white),
+              ),
             ),
           );
         },

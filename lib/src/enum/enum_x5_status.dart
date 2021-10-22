@@ -12,93 +12,93 @@ enum EX5Status {
   ///
   /// 尚未初始化
   ///
-  INIT,
+  init,
 
   ///
   /// Initializing
   ///
   /// 正在初始化
   ///
-  INIT_LOADING,
+  initializing,
 
   ///
   /// Initialization succeeded
   ///
   /// 初始化成功
   ///
-  SUCCESS,
+  success,
 
   ///
   /// Initialization failed
   ///
   /// 初始化失败
   ///
-  FAIL,
+  fail,
 
   ///
   /// Download succeeded
   ///
   /// 下载成功
   ///
-  DOWNLOAD_SUCCESS,
+  downloadSucceeded,
 
   ///
   /// Download failed
   ///
   /// 下载失败
   ///
-  DOWNLOAD_FAIL,
+  downloadFailed,
 
   ///
   /// Downloading
   /// 正在下载
   ///
-  DOWNLOAD_LOADING,
+  downloading,
 
   ///
   /// Installation succeeded
   ///
   /// 安装成功
   ///
-  INSTALL_SUCCESS,
+  installationSucceeded,
 
   ///
   /// Installation failed
   ///
   /// 安装失败
   ///
-  INSTALL_FAIL,
+  installationFailed,
 }
 
 extension EX5StatusExtension on EX5Status {
   static EX5Status getTypeValue(int i) {
     switch (i) {
       case 0:
-        return EX5Status.INIT;
+        return EX5Status.init;
       case 1:
-        return EX5Status.INIT_LOADING;
+        return EX5Status.initializing;
       case 10:
-        return EX5Status.SUCCESS;
+        return EX5Status.success;
       case 11:
-        return EX5Status.FAIL;
+        return EX5Status.fail;
       case 20:
-        return EX5Status.DOWNLOAD_SUCCESS;
+        return EX5Status.downloadSucceeded;
       case 21:
-        return EX5Status.DOWNLOAD_FAIL;
+        return EX5Status.downloadFailed;
       case 22:
-        return EX5Status.DOWNLOAD_LOADING;
+        return EX5Status.downloading;
       case 30:
-        return EX5Status.INSTALL_SUCCESS;
+        return EX5Status.installationSucceeded;
       case 31:
-        return EX5Status.INSTALL_FAIL;
+        return EX5Status.installationFailed;
       default:
 
         ///
-        /// It returns to [EX5Status.INIT] status by default
+        /// It returns to [EX5Status.init] status by default
         ///
-        /// 默认情况下，它返回到 [EX5Status.INIT] 状态
+        /// 默认情况下，它返回到 [EX5Status.init] 状态
         ///
-        return EX5Status.INIT;
+        return EX5Status.init;
     }
   }
 }

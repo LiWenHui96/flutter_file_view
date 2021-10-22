@@ -88,11 +88,12 @@ class FileNetworkViewer extends StatefulWidget {
   final Color? btnBgColor;
   final BorderSide? borderSide;
 
+  @override
   _FileNetworkViewerState createState() => _FileNetworkViewerState();
 }
 
 class _FileNetworkViewerState extends State<FileNetworkViewer> {
-  EViewStatus eViewStatus = EViewStatus.LOADING;
+  EViewStatus eViewStatus = EViewStatus.loading;
 
   /// Does it support downloading
   bool isDownload = true;
@@ -117,9 +118,9 @@ class _FileNetworkViewerState extends State<FileNetworkViewer> {
 
   @override
   Widget build(BuildContext context) {
-    if (eViewStatus == EViewStatus.LOADING) {
+    if (eViewStatus == EViewStatus.loading) {
       return _buildLoadWidget();
-    } else if (eViewStatus == EViewStatus.SUCCESS) {
+    } else if (eViewStatus == EViewStatus.success) {
       return _buildBodyWidget();
     } else {
       return _buildLoadWidget();
@@ -127,7 +128,7 @@ class _FileNetworkViewerState extends State<FileNetworkViewer> {
   }
 
   Widget _buildLoadWidget() {
-    return Center(child: CupertinoActivityIndicator(radius: 14.0));
+    return const Center(child: CupertinoActivityIndicator(radius: 14.0));
   }
 
   Widget _buildBodyWidget() {
@@ -159,12 +160,12 @@ class _FileNetworkViewerState extends State<FileNetworkViewer> {
         height: 48,
       ),
       Container(
-        margin: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
+        margin: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
         child: Text(
           fileName,
           style: widget.fileNameStyle ??
-              TextStyle(
-                color: const Color(0xFF333333),
+              const TextStyle(
+                color: Color(0xFF333333),
                 fontWeight: FontWeight.bold,
               ),
         ),
@@ -172,7 +173,7 @@ class _FileNetworkViewerState extends State<FileNetworkViewer> {
       Text(
         fileSize,
         style:
-            widget.fileSizeStyle ?? TextStyle(color: const Color(0xFF333333)),
+            widget.fileSizeStyle ?? const TextStyle(color: Color(0xFF333333)),
       ),
     ];
   }
@@ -236,7 +237,7 @@ class _FileNetworkViewerState extends State<FileNetworkViewer> {
         value: progressValue,
         strokeWidth: 8.0,
         backgroundColor: Theme.of(context).primaryColor,
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.tealAccent),
+        valueColor: const AlwaysStoppedAnimation<Color>(Colors.tealAccent),
       ),
     );
   }
@@ -292,10 +293,10 @@ class _FileNetworkViewerState extends State<FileNetworkViewer> {
 
     setState(() {
       if (mounted) {
-        eViewStatus = EViewStatus.SUCCESS;
+        eViewStatus = EViewStatus.success;
 
-        this.isDownload = !(result[0] as bool);
-        this.fileSize = result[1] as String;
+        isDownload = !(result[0] as bool);
+        fileSize = result[1] as String;
       }
     });
   }

@@ -73,7 +73,7 @@ class FileLocalViewer extends StatefulWidget {
 }
 
 class _FileLocalViewerState extends State<FileLocalViewer> {
-  EViewStatus eViewStatus = EViewStatus.LOADING;
+  EViewStatus eViewStatus = EViewStatus.loading;
 
   @override
   void initState() {
@@ -86,20 +86,20 @@ class _FileLocalViewerState extends State<FileLocalViewer> {
 
   @override
   Widget build(BuildContext context) {
-    if (eViewStatus == EViewStatus.LOADING) {
+    if (eViewStatus == EViewStatus.loading) {
       return _buildLoadWidget();
-    } else if (eViewStatus == EViewStatus.NONEXISTENT) {
+    } else if (eViewStatus == EViewStatus.nonexistent) {
       // Check whether the file exists first
       return _buildNonexistentWidget();
-    } else if (eViewStatus == EViewStatus.UNSUPPORTED_TYPE) {
+    } else if (eViewStatus == EViewStatus.unsupporeedType) {
       return _buildUnSupportTypeWidget();
-    } else if (eViewStatus == EViewStatus.ENGINE_FAIL) {
+    } else if (eViewStatus == EViewStatus.engineFail) {
       return _buildEngineFailWidget();
-    } else if (eViewStatus == EViewStatus.UNSUPPORTED_PLATFORM) {
+    } else if (eViewStatus == EViewStatus.unsupporeedPlatform) {
       return _buildUnSupportPlatformWidget();
-    } else if (eViewStatus == EViewStatus.FAIL) {
+    } else if (eViewStatus == EViewStatus.fail) {
       return _buildFailWidget();
-    } else if (eViewStatus == EViewStatus.SUCCESS) {
+    } else if (eViewStatus == EViewStatus.success) {
       if (Platform.isAndroid) {
         return _createAndroidView();
       } else {
@@ -113,7 +113,7 @@ class _FileLocalViewerState extends State<FileLocalViewer> {
 
   Widget _buildLoadWidget() {
     return widget.loadingWidget ??
-        Center(child: CupertinoActivityIndicator(radius: 14.0));
+        const Center(child: CupertinoActivityIndicator(radius: 14.0));
   }
 
   Widget _buildNonexistentWidget() {
@@ -165,7 +165,7 @@ class _FileLocalViewerState extends State<FileLocalViewer> {
 
     bool flag = await _channel.invokeMethod('openFile');
     if (!flag) {
-      _setStatus(EViewStatus.UNSUPPORTED_TYPE);
+      _setStatus(EViewStatus.unsupporeedType);
     }
   }
 
@@ -190,19 +190,19 @@ class _FileLocalViewerState extends State<FileLocalViewer> {
       if (isExists) {
         if (Platform.isAndroid) {
           EX5Status? eX5status = await FlutterFileView.getX5Status();
-          if (eX5status == EX5Status.SUCCESS) {
-            _setStatus(EViewStatus.SUCCESS);
+          if (eX5status == EX5Status.success) {
+            _setStatus(EViewStatus.success);
           } else {
-            _setStatus(EViewStatus.ENGINE_FAIL);
+            _setStatus(EViewStatus.engineFail);
           }
         } else {
-          _setStatus(EViewStatus.SUCCESS);
+          _setStatus(EViewStatus.success);
         }
       } else {
-        _setStatus(EViewStatus.NONEXISTENT);
+        _setStatus(EViewStatus.nonexistent);
       }
     } else {
-      _setStatus(EViewStatus.UNSUPPORTED_PLATFORM);
+      _setStatus(EViewStatus.unsupporeedPlatform);
     }
   }
 

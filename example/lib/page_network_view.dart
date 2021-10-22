@@ -16,7 +16,7 @@ class FileNetworkViewPage extends StatefulWidget {
   final String downloadUrl;
   final String downloadPath;
 
-  FileNetworkViewPage({
+  const FileNetworkViewPage({
     Key? key,
     required this.downloadUrl,
     required this.downloadPath,
@@ -35,7 +35,7 @@ class _FileNetworkViewPageState extends State<FileNetworkViewPage> {
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: FileNetworkViewer(
         downloadUrl: widget.downloadUrl,

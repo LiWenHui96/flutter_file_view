@@ -13,7 +13,10 @@ import 'package:flutter_file_view/flutter_file_view.dart';
 class FileLocalViewPage extends StatefulWidget {
   final String filePath;
 
-  FileLocalViewPage({Key? key, required this.filePath}) : super(key: key);
+  const FileLocalViewPage({
+    Key? key,
+    required this.filePath,
+  }) : super(key: key);
 
   @override
   _FileLocalViewPageState createState() => _FileLocalViewPageState();
@@ -25,7 +28,7 @@ class _FileLocalViewPageState extends State<FileLocalViewPage> {
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.light,
-        title: Text("文档"),
+        title: const Text("文档"),
       ),
       body: FileLocalViewer(localFilePath: widget.filePath),
     );

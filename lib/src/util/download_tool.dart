@@ -15,7 +15,7 @@ class DownloadTool {
       connectTimeout: 90 * 1000,
       receiveTimeout: 90 * 1000,
     );
-    return new Dio(options);
+    return Dio(options);
   }
 
   ///
@@ -56,13 +56,13 @@ class DownloadTool {
       int size = 0;
       response.headers.forEach((label, value) {
         if (label == 'content-length') {
-          value.forEach((v) {
+          for (var v in value) {
             size += int.tryParse(v) ?? 0;
-          });
+          }
         }
       });
 
-      if (response.headers.toString().indexOf('content-length') > -1) {
+      if (response.headers.toString().contains('content-length')) {
         return '文件大小：${fileSize(size)}';
       } else {
         return '文件大小获取失败';

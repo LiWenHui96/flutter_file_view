@@ -12,21 +12,21 @@ enum EViewStatus {
   ///
   /// 文件初始化/加载状态
   ///
-  LOADING,
+  loading,
 
   ///
   /// Nonexistent file
   ///
   /// 文件不存在
   ///
-  NONEXISTENT,
+  nonexistent,
 
   ///
   /// Unsupported file type
   ///
   /// 文件类型不支持
   ///
-  UNSUPPORTED_TYPE,
+  unsupporeedType,
 
   ///
   /// only Android
@@ -35,7 +35,7 @@ enum EViewStatus {
   ///
   /// Tencent X5 加载失败
   ///
-  ENGINE_FAIL,
+  engineFail,
 
   ///
   /// only Android, iOS
@@ -44,19 +44,19 @@ enum EViewStatus {
   ///
   /// 平台不支持
   ///
-  UNSUPPORTED_PLATFORM,
+  unsupporeedPlatform,
 
   ///
   /// fail
   ///
   /// 失败
   ///
-  FAIL,
+  fail,
 
   ///
   /// success
   ///
   /// 成功
   ///
-  SUCCESS,
+  success,
 }

@@ -5,11 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_file_view/flutter_file_view.dart';
 
 class FlutterFileView {
-  static MethodChannel _channel = MethodChannel(channelName)
+  static final MethodChannel _channel = const MethodChannel(channelName)
     ..setMethodCallHandler(_handler);
 
-  static StreamController<EX5Status> _initController =
-      new StreamController.broadcast();
+  static final StreamController<EX5Status> _initController =
+      StreamController.broadcast();
 
   static Stream<EX5Status> get initController => _initController.stream;
 
