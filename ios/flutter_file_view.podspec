@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_file_view'
-  s.version          = '1.2.1'
+  s.version          = '1.3.0'
   s.summary          = 'File viewer plugin for Flutter, support local file and network link of Android, iOS'
   s.description      = <<-DESC
 File viewer plugin for Flutter, support local file and network link of Android, iOS
