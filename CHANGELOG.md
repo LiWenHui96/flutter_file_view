@@ -1,3 +1,8 @@
+## 1.3.0
+
+- Android programming language is adjusted from Java to kotlin.
+- Optimize with flutter_lints.
+
 ## 1.2.1
 
 - Update tool class name
