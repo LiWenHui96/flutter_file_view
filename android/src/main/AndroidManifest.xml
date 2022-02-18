@@ -16,8 +16,8 @@
         <service
             android:name="com.tencent.smtt.export.external.DexClassLoaderProviderService"
             android:label="dexopt"
-            android:required="false"
-            android:process=":dexopt" />
+            android:process=":dexopt"
+            android:required="false" />
 
         <!--在Android P机型遇到org.apache包名找不到的crash -->
         <!--https://x5.tencent.com/docs/questions.html 问题4.6解决方案-->

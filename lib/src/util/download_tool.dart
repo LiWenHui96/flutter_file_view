@@ -1,74 +1,97 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_file_view/flutter_file_view.dart';
 
-///
 /// @Describe: Download tool
-///            下载工具类
 ///
 /// @Author: LiWeNHuI
-/// @Date: 2021/9/14
-///
+/// @Date: 2022/2/15
 
 class DownloadTool {
   static Dio _dio() {
-    BaseOptions options = BaseOptions(
+    final BaseOptions options = BaseOptions(
       connectTimeout: 90 * 1000,
       receiveTimeout: 90 * 1000,
     );
     return Dio(options);
   }
 
-  ///
   /// Using Dio to realize file download function
-  ///
-  /// 利用Dio实现文件下载功能
-  ///
-  static Future<DownloadStatus> downloadFile(
+  Future<void> downloadFile(
     String fileUrl,
     String filePath, {
+    required Function(DownloadStatus value) callback,
     ProgressCallback? onProgress,
+    Map<String, dynamic>? queryParameters,
+    CancelToken? cancelToken,
+    bool deleteOnError = true,
+    String lengthHeader = Headers.contentLengthHeader,
+    dynamic data,
+    Options? options,
   }) async {
+    callback(DownloadStatus.none);
+
     try {
-      Response response = await _dio().download(
+      callback(DownloadStatus.downloading);
+
+      final Response<dynamic> response = await _dio().download(
         fileUrl,
         filePath,
         onReceiveProgress: onProgress,
+        queryParameters: queryParameters,
+        cancelToken: cancelToken,
+        deleteOnError: deleteOnError,
+        lengthHeader: lengthHeader,
+        data: data,
+        options: options,
       );
 
-      return response.statusCode == 200
-          ? DownloadStatus.success
-          : DownloadStatus.fail;
+      callback(response.statusCode == 200
+          ? DownloadStatus.done
+          : DownloadStatus.fail);
     } catch (e) {
-      debugPrint('服务器出错或网络连接失败！');
-      return DownloadStatus.serviceErr;
+      callback(DownloadStatus.error);
     }
   }
 
-  ///
   /// Get file size through network link
-  ///
-  /// 通过网络链接获取文件大小
-  ///
-  static Future<String> getFileSize(String fileUrl) async {
+  Future<String?> getFileSize(
+    BuildContext context,
+    String fileUrl, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    CancelToken? cancelToken,
+    Options? options,
+    String? fileSizeTip,
+    String? fileSizeErrorTip,
+    String? fileSizeFailTip,
+  }) async {
+    final ViewerLocalizations local = ViewerLocalizations.of(context);
+
     try {
-      Response response = await _dio().head(fileUrl);
+      final Response<dynamic> response = await _dio().head<dynamic>(
+        fileUrl,
+        data: data,
+        queryParameters: queryParameters,
+        cancelToken: cancelToken,
+        options: options,
+      );
 
       int size = 0;
-      response.headers.forEach((label, value) {
+      response.headers.forEach((String label, List<String> value) {
         if (label == 'content-length') {
-          for (var v in value) {
+          for (final String v in value) {
             size += int.tryParse(v) ?? 0;
           }
         }
       });
 
       if (response.headers.toString().contains('content-length')) {
-        return '文件大小：${fileSize(size)}';
+        return '${fileSizeTip ?? local.fileSize}${fileSize(size)}';
       } else {
-        return '文件大小获取失败';
+        return fileSizeFailTip ?? local.fileSizeFail;
       }
     } catch (e) {
-      return '文件大小获取失败';
+      return fileSizeErrorTip ?? local.fileSizeError;
     }
   }
 }

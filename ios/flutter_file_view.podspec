@@ -4,10 +4,10 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_file_view'
-  s.version          = '1.3.0'
-  s.summary          = 'File viewer plugin for Flutter, support local file and network link of Android, iOS'
+  s.version          = '2.0.0'
+  s.summary          = 'A file viewer plugin for Flutter, support local file and network link of Android, iOS.'
   s.description      = <<-DESC
-File viewer plugin for Flutter, support local file and network link of Android, iOS
+A file viewer plugin for Flutter, support local file and network link of Android, iOS.
                        DESC
   s.homepage         = 'https://github.com/LiWenHui96/flutter_file_view'
   s.license          = { :file => '../LICENSE' }
@@ -15,11 +15,9 @@ File viewer plugin for Flutter, support local file and network link of Android, 
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.platform = :ios, '8.0'
-  s.ios.deployment_target = '8.0'
+  s.platform = :ios, '9.0'
 
-  # 引入系统 framework
-  # s.frameworks = 'QuickLook'
-
+  # Flutter.framework does not contain a i386 slice.
+  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
 end
