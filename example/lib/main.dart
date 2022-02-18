@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_file_view_example/page_network_view.dart';
+import 'package:flutter_file_view/flutter_file_view.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'page_file_view.dart';
+import 'page_local_file_viewer.dart';
+import 'page_network_file_viewer.dart';
 
 void main() => runApp(const MyApp());
 
@@ -22,6 +23,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        ViewerLocalizationsDelegate.delegate,
+      ],
+      supportedLocales: [Locale('en', 'US'), Locale('zh', 'CN')],
       debugShowCheckedModeBanner: false,
       home: HomePage(),
     );
@@ -36,120 +44,91 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> iosFiles = [
-    'docx.docx',
-    'doc.doc',
-    'xlsx.xlsx',
-    'xls.xls',
-    'pptx.pptx',
-    'ppt.ppt',
-    'pdf.pdf',
-    'txt.txt',
-    'jpg.jpg',
-    'jpeg.jpeg',
-    'png.png',
+  List<String> files = [
+    '测试docx.docx',
+    '测试doc.doc',
+    '测试xlsx.xlsx',
+    '测试xls.xls',
+    '测试pptx.pptx',
+    '测试ppt.ppt',
+    '测试pdf.pdf',
+    '测试txt.txt',
+    'https://fanhai-photo.oss-cn-shanghai.aliyuncs.com/15_扫描全能王 2021-11-20 09.18(1).pdf',
   ];
-
-  List<String> androidFiles = [
-    'docx.docx',
-    'doc.doc',
-    'xlsx.xlsx',
-    'xls.xls',
-    'pptx.pptx',
-    'ppt.ppt',
-    'pdf.pdf',
-    'txt.txt',
-  ];
-
-  List<String> files = [];
-
-  @override
-  void initState() {
-    if (Platform.isAndroid) {
-      files = androidFiles;
-    } else if (Platform.isIOS) {
-      files = iosFiles;
-    }
-
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-        title: const Text('File View'),
-      ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          String filePath = files[index];
-          String fileShowText = '';
-
-          int i = filePath.lastIndexOf('/');
-          if (i <= -1) {
-            fileShowText = filePath;
-          } else {
-            fileShowText = filePath.substring(i + 1);
-          }
-
-          int j = fileShowText.lastIndexOf('.');
-
-          String title = '';
-          String type = '';
-
-          if (j > -1) {
-            title = fileShowText.substring(0, j);
-            type = fileShowText.substring(j + 1).toLowerCase();
-          }
-
-          return GestureDetector(
-            onTap: () {
-              if (filePath.contains('http://') ||
-                  filePath.contains('https://')) {
-                onNetworkTap(title, type, filePath);
-              } else {
-                onLocalTap(type, 'assets/files/$filePath');
-              }
-            },
-            child: Container(
-              height: 50,
-              alignment: Alignment.center,
-              margin: const EdgeInsets.only(top: 8.0),
-              color: Theme.of(context).primaryColor,
-              child: Text(
-                fileShowText,
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-          );
-        },
-        itemCount: files.length,
-      ),
+      appBar: AppBar(title: const Text('File View')),
+      body: _buildBodyWidget(),
     );
   }
 
-  onLocalTap(String type, String assetPath) async {
+  Widget _buildBodyWidget() {
+    return ListView.builder(
+      itemCount: files.length,
+      itemBuilder: (context, index) {
+        String filePath = files[index];
+        String fileShowText = '';
+
+        int i = filePath.lastIndexOf('/');
+        if (i <= -1) {
+          fileShowText = filePath;
+        } else {
+          fileShowText = filePath.substring(i + 1);
+        }
+
+        int j = fileShowText.lastIndexOf('.');
+
+        String title = '';
+        String type = '';
+
+        if (j > -1) {
+          title = fileShowText.substring(0, j);
+          type = fileShowText.substring(j + 1).toLowerCase();
+        }
+
+        final child = ElevatedButton(
+          onPressed: () {
+            if (filePath.contains('http://') || filePath.contains('https://')) {
+              onNetworkTap(title, type, filePath);
+            } else {
+              onLocalTap(type, 'assets/files/$filePath');
+            }
+          },
+          child: Text(fileShowText),
+        );
+
+        return Container(
+          margin: const EdgeInsets.only(top: 10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          child: child,
+        );
+      },
+    );
+  }
+
+  Future onLocalTap(String type, String assetPath) async {
     String filePath = await setFilePath(type, assetPath);
     if (!await asset2Local(type, assetPath)) {
       return;
     }
 
     Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-      return FileLocalViewPage(filePath: filePath);
+      return LocalFileViewerPage(filePath: filePath);
     }));
   }
 
-  onNetworkTap(String title, String type, String downloadUrl) async {
+  Future onNetworkTap(String title, String type, String downloadUrl) async {
     String filePath = await setFilePath(type, title);
 
-    if (await fileExists(filePath)) {
+    if (fileExists(filePath)) {
       Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-        return FileLocalViewPage(filePath: filePath);
+        return LocalFileViewerPage(filePath: filePath);
       }));
     } else {
       Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-        return FileNetworkViewPage(
+        return NetworkFileViewerPage(
           downloadUrl: downloadUrl,
           downloadPath: filePath,
         );
@@ -157,24 +136,11 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  setFilePath(String type, String assetPath) async {
-    final Directory _directory = await getTemporaryDirectory();
-    String dic = "${_directory.path}/fileview/";
-    return dic + base64.encode(utf8.encode(assetPath)) + "." + type;
-  }
-
-  fileExists(String filePath) async {
-    if (await File(filePath).exists()) {
-      return true;
-    }
-    return false;
-  }
-
-  asset2Local(String type, String assetPath) async {
+  Future asset2Local(String type, String assetPath) async {
     String filePath = await setFilePath(type, assetPath);
 
     File file = File(filePath);
-    if (await fileExists(filePath)) {
+    if (fileExists(filePath)) {
       await file.delete();
     }
 
@@ -184,4 +150,11 @@ class _HomePageState extends State<HomePage> {
     await file.writeAsBytes(bd.buffer.asUint8List(), flush: true);
     return true;
   }
+
+  Future setFilePath(String type, String assetPath) async {
+    final _directory = await getTemporaryDirectory();
+    return "${_directory.path}/fileview/${base64.encode(utf8.encode(assetPath))}.$type";
+  }
+
+  bool fileExists(String filePath) => File(filePath).existsSync();
 }
