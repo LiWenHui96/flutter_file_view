@@ -4,36 +4,67 @@
 
 Language: [中文](README-ZH.md) | English
 
-At present, the plugin is only used by `Android`, `iOS`
+> At present, the plugin is only used by Android, iOS
 
-You can use [FileLocalViewer](lib/src/view/file_local_viewer.dart) to preview local files
-
-You can use [FileNetworkViewer](lib/src/view/file_network_viewer.dart) to download the network link
-and preview the file in combination with `FileLocalView`
+* You can use [LocalFileViewer](lib/src/view/local_file_viewer.dart) to preview local files.
+* You can use [NetworkFileViewer](lib/src/view/network_file_viewer.dart) to download the network link and preview the file in combination with `LocalFileViewer`.
 
 ### Use of third-party plugins
 
-- Use `dio` to make network requests.
-- The v1.0.0 version no longer provides permission requests.
-- It is recommended to use `getTemporaryDirectory()` as the target path, which can be implemented
-  using the [path_provider](https://pub.dev/packages/path_provider) plugin.
+* Use `dio` to make network requests.
+* It is recommended to use `getTemporaryDirectory()` as the target path, which can be implemented using the [path_provider](https://pub.dev/packages/path_provider) plugin.
 
 ## Preparing for use
 
 ### Version constraints
 
 ```yaml
-  sdk: ">=2.14.0 <3.0.0"
-  flutter: ">=2.5.0"
+  sdk: ">=2.12.0 <3.0.0"
 ```
 
-### Flutter
+### Rely
 
-Add `flutter_file_view` to `pubspec.yaml` dependencies.
+1. Add `flutter_file_view` to `pubspec.yaml` dependencies.
 
 ```yaml
 dependencies:
   flutter_file_view: ^latest_version
+```
+
+2. Get the package by executing the flutter command.
+
+```
+flutter pub get
+```
+
+3. Introduce
+
+```dart
+import 'package:flutter_file_view/flutter_file_view.dart';
+```
+
+### Localized configuration
+
+Add in `MaterialApp`.
+
+```dart
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      ...
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+        ...
+        ViewerLocalizationsDelegate.delegate,
+      ],
+      ...
+    );
+  }
+}
 ```
 
 ### iOS
@@ -63,25 +94,28 @@ Add a file named `network_security_config.xml` in `res/xml` directory, The conte
 </network-security-config>
 ```
 
-## Local File Preview
+## Local File Preview - LocalFileViewer
 
-#### Android is implemented by [Tencent X5](https://x5.tencent.com/docs/index.html), iOS is implemented by [WKWebView](https://developer.apple.com/documentation/webkit/wkwebview).
+* Android is implemented by [Tencent X5](https://x5.tencent.com/docs/index.html)
+* iOS is implemented by [WKWebView](https://developer.apple.com/documentation/webkit/wkwebview)
 
 ### Supported file type
 
 * Android `docx,doc,xlsx,xls,pptx,ppt,pdf,txt`
-* iOS `docx,doc,xlsx,xls,pptx,ppt,pdf,txt,jpg,jpeg,png`
+* iOS `docx,doc,xlsx,xls,pptx,ppt,pdf,txt`
 
 ### Usage
 
-| Name                      | Old Name                  | Type           | Description                                                    | Default                                                        |
-| ------------------------- | ------------------------- | -------------- | -------------------------------------------------------------- | -------------------------------------------------------------- |
-| localFilePath             | filePath                  | `String`       | Local file path (full path)                                    | Required                                                       |
-| unsupportedPlatformTip    | unSupportPlatformTip      | `String`       | Platform hints are not supported                               | `当前仅支持Android、iOS平台`                                     |
-| nonexistentFileTip        | nonExistentFileTip        | `String`       | Prompt that the file under this file path does not exist       | `文件不存在`                                                    |
-| openFailTip               | fileFailTip               | `String`       | Prompt of failure to open file                                 | `文件打开失败`                                                   |
-| loadingWidget             | -                         | `Widget`       | Widget showing loading status                                  | See source file                                                |
-| unsupportedTypeWidget     | unSupportFileWidget       | `Widget`       | Unsupported file type widget                                   | See source file                                                |
+| Name | Type | Description | Default |
+| --- | --- | --- | --- |
+| filePath | `String` | Path to local file | Required |
+| placeholder | `Widget?` | Widget displayed while the target [filePath] is loading. | `CupertinoActivityIndicator(radius: 14.0)` |
+| unsupportedPlatformWidget | `Widget?` | Widget displayed on unsupported platforms | `Center(child: Text(ViewerLocalizations.of(context).unsupportedPlatformTip))` |
+| nonExistentWidget | `Widget?` | Widget displayed while the file with path [filePath] does not exist | `Center(child: Text(ViewerLocalizations.of(context).nonExistentTip))` |
+| unsupportedTypeWidget | `Widget` | Widget displayed while the file is of an unsupported file types | `Center(child: Text(ViewerLocalizations.of(context).unsupportedType))` |
+| isBarShow | `bool` | Parameter `is_bar_show` of `TbsReaderView.openFile` | `false` |
+| intoDownloading | `bool` | Parameter `into_downloading` of `TbsReaderView.openFile` | `false` |
+| isBarAnimating | `bool` | Parameter `is_bar_animating` of `TbsReaderView.openFile` | `false` |
 
 ### Android special notes
 
@@ -103,37 +137,48 @@ FlutterFileView.initController.listen((res) {
 - Not Support Google Play, Reason: [Issues 1.11](https://x5.tencent.com/docs/questions.html).
 - Running on Android emulator is not supported.
 
-## Network Link View
+## Network Link Preview - NetworkFileViewer
 
-A **network link view** which based on the WeChat’s UI, with download function and view click
-effect.
+A **network link view** which based on the WeChat’s UI, with download function and view click effect.
 
 ### Usage
 
-| Name                      | Type                    | Description                                                          | Default                          |
-| ------------------------- | ----------------------- | -------------------------------------------------------------------- | -------------------------------- |
-| downloadUrl               | `String`                | Download link for file                                               | Required                         |
-| downloadPath              | `String`                | Storage address of the file                                          | Required                         |
-| onViewPressed             | `VoidCallback`          | File viewing function                                                | Required                         |
-| fileShowName              | `String`                | Deprecated                                                           | -                                |
-| fileType                  | `String`                | Deprecated                                                           | -                                |
-| fileNameStyle             | `TextStyle`             | The style of the displayed file name                                 | See source file                  |
-| fileSizeStyle             | `TextStyle`             | The style of the text showing the size of the file resource          | See source file                  |
-| downloadTitle             | `Widget`                | Button title when downloadable                                       | 文件下载                          |
-| viewTitle                 | `String`                | Button title when viewable                                           | 文件查看                          |
-| btnTitleColor             | `Color`                 | Button title color                                                   | `Colors.white`                   |
-| btnBgColor                | `Color`                 | Button background color                                              | `Theme.of(context).primaryColor` |
-| borderSide                | `BorderSide`            | Button border                                                        | `ElevatedButton` 默认             |
+| Name | Type | Description | Default |
+| --- | --- | --- | --- |
+| downloadUrl | `String` | Download link for file | Required |
+| downloadPath | `String` | The file storage address is used to determine whether the file can be downloaded | Required |
+| onViewPressed | `VoidCallback` | File viewing function | Required |
+| placeholder | `Widget?` | Widget displayed while the target [downloadUrl] is loading. | `CupertinoActivityIndicator(radius: 14.0)` |
+| fileSizeData | `dynamic` | Parameter `data` of `FlutterFileView.getFileSize` | `null` |
+| fileSizeQueryParameters | `Map<String, dynamic>?` | Parameter `queryParameters` of `FlutterFileView.getFileSize` | `null` |
+| fileSizeOptions | `Options?` | Parameter `options` of `FlutterFileView.getFileSize` | `null` |
+| fileSizeTip | `String?` | Parameter `fileSizeTip` of `FlutterFileView.getFileSize` | `ViewerLocalizations.of(context).fileSizeTip` |
+| fileSizeFailTip | `String?` | Parameter `fileSizeFailTip` of `FlutterFileView.getFileSize` | `ViewerLocalizations.of(context).fileSizeFailTip` |
+| fileSizeErrorTip | `String?` | Parameter `fileSizeErrorTip` of `FlutterFileView.getFileSize` | `ViewerLocalizations.of(context).fileSizeErrorTip` |
+| downloadQueryParameters | `Map<String, dynamic>?` | Parameter `queryParameters` of `FlutterFileView.downloadFile` | `null` |
+| downloadDeleteOnError | `bool?` | Parameter `deleteOnError` of `FlutterFileView.downloadFile` | `true` |
+| downloadLengthHeader | `String?` | Parameter `lengthHeader` of `FlutterFileView.downloadFile` | `Headers.contentLengthHeader` |
+| downloadData | `dynamic` | Parameter `data` of `FlutterFileView.downloadFile` | `null` |
+| downloadOptions | `Options?` | Parameter `options` of `FlutterFileView.downloadFile` | `null` |
+| fileNameStyle | `TextStyle?` | The style of the displayed file name | `Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight:FontWeight.bold)` |
+| fileSizeStyle | `TextStyle?` | The style of the displayed file size | `Theme.of(context).textTheme.bodyMedium` |
+| downloadTitle | `String?` | Button title when downloadable | `ViewerLocalizations.of(context).downloadTitle` |
+| viewTitle | `String?` | Button title when viewable | `ViewerLocalizations.of(context).viewTitle` |
+| buttonStyle | `ButtonStyle?` | Button style | See source file |
+| btnTitleColor | `Color？` | The color of the text of the button | `Colors.white`|
+| btnBgColor | `Color？` | The color of the button's background | `Theme.of(context).primaryColor` |
+| progressSize | `double?` | Size of `CircularProgressIndicator` | `60.0` |
+| progressStrokeWidth | `double?` | `strokeWidth` of `CircularProgressIndicator` | `6.0` |
+| progressBackgroundColor | `Color？` | Background color of `CircularProgressIndicator`  | `Theme.of(context).primaryColor`|
+| progressValueColor | `Color？` | The value color of `CircularProgressIndicator` | `Colors.tealAccent` |
 
 ## Future Plans
 
-- Realize online viewing of network links. At present, `FileNetworkViewer` can be used to view after
-  downloading.
-- Consider removing the `onViewPressed` function of `FileNetworkViewer` and providing additional
-  events for opening files that cannot be previewed.
+- Realize online viewing of network links. At present, `NetworkFileViewer` can be used to view after downloading.
+- Consider removing the `onViewPressed` function of `NetworkFileViewer` and providing additional events for opening files that cannot be previewed.
 
 ## Other Api
 
 - Convert file size through `fileSize()`.
-- Download network files through `downloadFileByNet()`.
-- Get the network file size through `getFileSizeByNet()`.
+- Download network files through `downloadFile()`.
+- Get the network file size through `getFileSize()`.

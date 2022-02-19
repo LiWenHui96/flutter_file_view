@@ -175,8 +175,8 @@ FlutterFileView.initController.listen((res) {
 
 ## 未来计划
 
-- 实现网络链接的在线查看，当前可使用 `FileNetworkViewer` 实现下载后查看
-- 考虑将去除 `FileNetworkViewer` 的 `onViewPressed` 功能，将额外提供事件用于打开无法预览的文件
+- 实现网络链接的在线查看，当前可使用 `NetworkFileViewer` 实现下载后查看
+- 考虑将去除 `NetworkFileViewer` 的 `onViewPressed` 功能，将额外提供事件用于打开无法预览的文件
 
 ## 其他Api
 
