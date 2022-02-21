@@ -66,6 +66,8 @@ class _LocalFileViewerState extends State<LocalFileViewer> {
               return _buildNonexistentWidget();
             case ViewType.unsupported_type:
               return _buildUnsupportTypeWidget();
+            case ViewType.engine_loading:
+              return _buildEngineLoadingWidget();
             case ViewType.engine_fail:
               return _buildEngineFailWidget();
             case ViewType.done:
@@ -100,6 +102,10 @@ class _LocalFileViewerState extends State<LocalFileViewer> {
   Widget _buildUnsupportTypeWidget() {
     return widget.unsupportedTypeWidget ??
         showTipWidget(sprintf(local.unsupportedType, fileType));
+  }
+
+  Widget _buildEngineLoadingWidget() {
+    return showTipWidget(local.engineLoading);
   }
 
   Widget _buildEngineFailWidget() {
@@ -145,8 +151,19 @@ class _LocalFileViewerState extends State<LocalFileViewer> {
             final X5Status? eX5status = await FlutterFileView.getX5Status();
             if (eX5status == X5Status.done) {
               return ViewType.done;
-            } else {
+            } else if (eX5status == X5Status.error) {
               return ViewType.engine_fail;
+            } else {
+              FlutterFileView.initController.listen((X5Status e) async {
+                if (e == X5Status.done) {
+                  setState(() {});
+                } else {
+                  await FlutterFileView.initX5();
+                  setState(() {});
+                }
+              });
+
+              return ViewType.engine_loading;
             }
           } else {
             return ViewType.done;

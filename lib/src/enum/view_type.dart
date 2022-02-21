@@ -16,6 +16,9 @@ enum ViewType {
   /// Unsupported file type
   unsupported_type,
 
+  /// X5 initializing
+  engine_loading,
+
   /// X5 Initialization failed
   engine_fail,
 

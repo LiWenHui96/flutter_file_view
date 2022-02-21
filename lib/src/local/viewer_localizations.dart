@@ -25,6 +25,8 @@ abstract class ViewerLocalizationsBase {
 
   String get unsupportedType => getItem('unsupportedType').toString();
 
+  String get engineLoading => getItem('engineLoading').toString();
+
   String get engineFail => getItem('engineFail').toString();
 
   String get downloadTitle => getItem('downloadTitle').toString();
@@ -69,6 +71,7 @@ class ViewerLocalizations extends ViewerLocalizationsBase {
       'unsupportedPlatformTip': 'Currently only supports Android, iOS',
       'nonExistentTip': 'Non-existent file',
       'unsupportedType': 'Does not support opening files of type %s',
+      'engineLoading': 'Engine initializing, please wait...',
       'engineFail': 'The engine failed to load, please restart the app',
       'downloadTitle': 'Download',
       'viewTitle': 'View'
@@ -80,6 +83,7 @@ class ViewerLocalizations extends ViewerLocalizationsBase {
       'unsupportedPlatformTip': '当前仅支持Android、iOS',
       'nonExistentTip': '文件不存在',
       'unsupportedType': '不支持打开%s类型的文件',
+      'engineLoading': '引擎初始化中，请稍候...',
       'engineFail': '引擎加载失败，请重启App',
       'downloadTitle': '文件下载',
       'viewTitle': '文件查看'
