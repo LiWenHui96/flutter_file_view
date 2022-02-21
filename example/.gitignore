@@ -27,7 +27,14 @@
 .packages
 .pub-cache/
 .pub/
+pubspec.lock
 /build/
+
+# Exceptions to above rules.
+!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+# R.swift
+*.generated.swift
 
 # Web related
 lib/generated_plugin_registrant.dart
