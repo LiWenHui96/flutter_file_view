@@ -1,5 +1,5 @@
 group 'com.file.view'
-version '2.0.1'
+version '2.0.2'
 
 buildscript {
     ext.kotlin_version = '1.3.50'
