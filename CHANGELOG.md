@@ -1,3 +1,7 @@
+## 2.0.4
+
+* Update README.md
+
 ## 2.0.3
 
 * Fixed bug using titleMedium and bodyMedium fields that didn't exist in TextTheme before Flutter 2.10.x ([#3](https://github.com/LiWenHui96/flutter_file_view/issues/3))
