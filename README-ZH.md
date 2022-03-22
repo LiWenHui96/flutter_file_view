@@ -162,8 +162,8 @@ FlutterFileView.initController.listen((res) {
 | downloadLengthHeader | `String?` | `FlutterFileView.downloadFile` 参数 `lengthHeader` | `Headers.contentLengthHeader` |
 | downloadData | `dynamic` | `FlutterFileView.downloadFile` 参数 `data` | `null` |
 | downloadOptions | `Options?` | `FlutterFileView.downloadFile` 参数 `options` | `null` |
-| fileNameStyle | `TextStyle?` | 文件名称的样式 | `Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight:FontWeight.bold)` |
-| fileSizeStyle | `TextStyle?` | 文件资源大小的文字的样式 | `Theme.of(context).textTheme.bodyMedium` |
+| fileNameStyle | `TextStyle?` | 文件名称的样式 | `Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight:FontWeight.bold)` |
+| fileSizeStyle | `TextStyle?` | 文件资源大小的文字的样式 | `Theme.of(context).textTheme.bodyText2` |
 | downloadTitle | `String?` | 可下载时的按钮标题 | `ViewerLocalizations.of(context).downloadTitle` |
 | viewTitle | `String?` | 可查看时的按钮标题 | `ViewerLocalizations.of(context).viewTitle` |
 | buttonStyle | `ButtonStyle?` | 按钮样式 | 见源文件 |
