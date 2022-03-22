@@ -161,8 +161,8 @@ A **network link view** which based on the WeChat’s UI, with download function
 | downloadLengthHeader | `String?` | Parameter `lengthHeader` of `FlutterFileView.downloadFile` | `Headers.contentLengthHeader` |
 | downloadData | `dynamic` | Parameter `data` of `FlutterFileView.downloadFile` | `null` |
 | downloadOptions | `Options?` | Parameter `options` of `FlutterFileView.downloadFile` | `null` |
-| fileNameStyle | `TextStyle?` | The style of the displayed file name | `Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight:FontWeight.bold)` |
-| fileSizeStyle | `TextStyle?` | The style of the displayed file size | `Theme.of(context).textTheme.bodyMedium` |
+| fileNameStyle | `TextStyle?` | The style of the displayed file name | `Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight:FontWeight.bold)` |
+| fileSizeStyle | `TextStyle?` | The style of the displayed file size | `Theme.of(context).textTheme.bodyText2` |
 | downloadTitle | `String?` | Button title when downloadable | `ViewerLocalizations.of(context).downloadTitle` |
 | viewTitle | `String?` | Button title when viewable | `ViewerLocalizations.of(context).viewTitle` |
 | buttonStyle | `ButtonStyle?` | Button style | See source file |
