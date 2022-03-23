@@ -184,3 +184,5 @@ FlutterFileView.initController.listen((res) {
 - `fileSize()` 用于换算文件大小
 - `downloadFile()` 用于下载网络文件
 - `getFileSize()` 用于获取网络文件大小
+
+> 如果你喜欢我的项目，请在项目右上角 "Star" 一下。你的支持是我最大的鼓励！ ^_^

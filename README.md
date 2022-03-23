@@ -183,3 +183,5 @@ A **network link view** which based on the WeChat’s UI, with download function
 - Convert file size through `fileSize()`.
 - Download network files through `downloadFile()`.
 - Get the network file size through `getFileSize()`.
+
+> If you like my project, please in the upper right corner of the project "Star". Your support is my biggest encouragement! ^_^
