@@ -1,3 +1,7 @@
+## 2.0.5
+
+* Update LICENSE.
+
 ## 2.0.4
 
 * Update README.md
