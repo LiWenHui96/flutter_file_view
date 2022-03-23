@@ -1,6 +1,6 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_file_view (2.0.4):
+  - flutter_file_view (2.0.5):
     - Flutter
   - path_provider_ios (0.0.1):
     - Flutter
@@ -20,9 +20,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  flutter_file_view: e3ab05f6273fc2bea20976fdcb23a497d8e1bf19
+  flutter_file_view: 549f24d851aa5a1fcebac151bdbfe2b3928150dd
   path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3
