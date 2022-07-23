@@ -154,15 +154,16 @@ class _LocalFileViewerState extends State<LocalFileViewer> {
             } else if (eX5status == X5Status.error) {
               return ViewType.engine_fail;
             } else {
-              FlutterFileView.initController.listen((X5Status e) async {
-                if (e == X5Status.done) {
-                  setState(() {});
-                } else {
-                  await FlutterFileView.initX5();
+              FlutterFileView.initController.listen((X5Status e) {
+                if (e == X5Status.none ||
+                    e == X5Status.error ||
+                    e == X5Status.download_fail ||
+                    e == X5Status.install_fail) {
+                  FlutterFileView.initX5();
+                } else if (e == X5Status.done) {
                   setState(() {});
                 }
               });
-
               return ViewType.engine_loading;
             }
           } else {

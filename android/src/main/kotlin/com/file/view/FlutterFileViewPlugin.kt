@@ -32,7 +32,6 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
-            "getPlatformVersion" -> result.success("Android ${Build.VERSION.RELEASE}")
             "getX5Status" -> result.success(nowX5Status)
             "manualInitX5" -> manualInitX5()
             else -> result.notImplemented()
