@@ -1,3 +1,7 @@
+## 2.0.6
+
+* Fix `In android always says : Engine initilializing ,please wait` [#5](https://github.com/LiWenHui96/flutter_file_view/issues/5)
+
 ## 2.0.5
 
 * Update LICENSE.
