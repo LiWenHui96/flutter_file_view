@@ -20,6 +20,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  _MyAppState() {
+    FlutterFileView.initX5();
+  }
+
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(

@@ -32,6 +32,7 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
+            "initX5" -> x5Start()
             "getX5Status" -> result.success(nowX5Status)
             "manualInitX5" -> manualInitX5()
             else -> result.notImplemented()
@@ -201,9 +202,6 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        // When the App starts, start the initialization of the X5 kernel.
-        x5Start()
-
         // Register here due to TbsReaderView problem.
         if (mFlutterPluginBinding != null) {
             mFlutterPluginBinding!!.platformViewRegistry.registerViewFactory(

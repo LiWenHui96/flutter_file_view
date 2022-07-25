@@ -24,6 +24,12 @@ class FlutterFileView {
 
   static Future<void> initX5() async {
     if (Platform.isAndroid) {
+      await _channel.invokeMethod<void>('initX5');
+    }
+  }
+
+  static Future<void> manualInitX5() async {
+    if (Platform.isAndroid) {
       await _channel.invokeMethod<void>('manualInitX5');
     }
   }
