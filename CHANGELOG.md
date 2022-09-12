@@ -1,3 +1,7 @@
+# 2.0.8
+
+* On the Android platform, it supports opening two TbsReaderViews, but it is still not supported to display multiple TbsReaderViews under the same widget;
+
 ## 2.0.7
 
 * On Android, software startup initialization is no longer provided.
