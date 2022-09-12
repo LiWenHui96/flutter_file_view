@@ -107,16 +107,16 @@ Add a file named `network_security_config.xml` in `res/xml` directory, The conte
 
 ### Usage
 
-| Name | Type | Description | Default |
-| --- | --- | --- | --- |
-| filePath | `String` | Path to local file | Required |
-| placeholder | `Widget?` | Widget displayed while the target [filePath] is loading. | `CupertinoActivityIndicator(radius: 14.0)` |
-| unsupportedPlatformWidget | `Widget?` | Widget displayed on unsupported platforms | `Center(child: Text(ViewerLocalizations.of(context).unsupportedPlatformTip))` |
-| nonExistentWidget | `Widget?` | Widget displayed while the file with path [filePath] does not exist | `Center(child: Text(ViewerLocalizations.of(context).nonExistentTip))` |
-| unsupportedTypeWidget | `Widget` | Widget displayed while the file is of an unsupported file types | `Center(child: Text(ViewerLocalizations.of(context).unsupportedType))` |
-| isBarShow | `bool` | Parameter `is_bar_show` of `TbsReaderView.openFile` | `false` |
-| intoDownloading | `bool` | Parameter `into_downloading` of `TbsReaderView.openFile` | `false` |
-| isBarAnimating | `bool` | Parameter `is_bar_animating` of `TbsReaderView.openFile` | `false` |
+| Name                      | Type      | Description                                                         | Default                                                                       |
+|---------------------------|-----------|---------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| filePath                  | `String`  | Path to local file                                                  | Required                                                                      |
+| placeholder               | `Widget?` | Widget displayed while the target [filePath] is loading.            | `CupertinoActivityIndicator(radius: 14.0)`                                    |
+| unsupportedPlatformWidget | `Widget?` | Widget displayed on unsupported platforms                           | `Center(child: Text(ViewerLocalizations.of(context).unsupportedPlatformTip))` |
+| nonExistentWidget         | `Widget?` | Widget displayed while the file with path [filePath] does not exist | `Center(child: Text(ViewerLocalizations.of(context).nonExistentTip))`         |
+| unsupportedTypeWidget     | `Widget`  | Widget displayed while the file is of an unsupported file types     | `Center(child: Text(ViewerLocalizations.of(context).unsupportedType))`        |
+| isBarShow                 | `bool`    | Parameter `is_bar_show` of `TbsReaderView.openFile`                 | `false`                                                                       |
+| intoDownloading           | `bool`    | Parameter `into_downloading` of `TbsReaderView.openFile`            | `false`                                                                       |
+| isBarAnimating            | `bool`    | Parameter `is_bar_animating` of `TbsReaderView.openFile`            | `false`                                                                       |
 
 ### Android special notes
 
@@ -144,34 +144,34 @@ A **network link view** which based on the WeChat’s UI, with download function
 
 ### Usage
 
-| Name | Type | Description | Default |
-| --- | --- | --- | --- |
-| downloadUrl | `String` | Download link for file | Required |
-| downloadPath | `String` | The file storage address is used to determine whether the file can be downloaded | Required |
-| onViewPressed | `VoidCallback` | File viewing function | Required |
-| placeholder | `Widget?` | Widget displayed while the target [downloadUrl] is loading. | `CupertinoActivityIndicator(radius: 14.0)` |
-| fileSizeData | `dynamic` | Parameter `data` of `FlutterFileView.getFileSize` | `null` |
-| fileSizeQueryParameters | `Map<String, dynamic>?` | Parameter `queryParameters` of `FlutterFileView.getFileSize` | `null` |
-| fileSizeOptions | `Options?` | Parameter `options` of `FlutterFileView.getFileSize` | `null` |
-| fileSizeTip | `String?` | Parameter `fileSizeTip` of `FlutterFileView.getFileSize` | `ViewerLocalizations.of(context).fileSizeTip` |
-| fileSizeFailTip | `String?` | Parameter `fileSizeFailTip` of `FlutterFileView.getFileSize` | `ViewerLocalizations.of(context).fileSizeFailTip` |
-| fileSizeErrorTip | `String?` | Parameter `fileSizeErrorTip` of `FlutterFileView.getFileSize` | `ViewerLocalizations.of(context).fileSizeErrorTip` |
-| downloadQueryParameters | `Map<String, dynamic>?` | Parameter `queryParameters` of `FlutterFileView.downloadFile` | `null` |
-| downloadDeleteOnError | `bool?` | Parameter `deleteOnError` of `FlutterFileView.downloadFile` | `true` |
-| downloadLengthHeader | `String?` | Parameter `lengthHeader` of `FlutterFileView.downloadFile` | `Headers.contentLengthHeader` |
-| downloadData | `dynamic` | Parameter `data` of `FlutterFileView.downloadFile` | `null` |
-| downloadOptions | `Options?` | Parameter `options` of `FlutterFileView.downloadFile` | `null` |
-| fileNameStyle | `TextStyle?` | The style of the displayed file name | `Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight:FontWeight.bold)` |
-| fileSizeStyle | `TextStyle?` | The style of the displayed file size | `Theme.of(context).textTheme.bodyText2` |
-| downloadTitle | `String?` | Button title when downloadable | `ViewerLocalizations.of(context).downloadTitle` |
-| viewTitle | `String?` | Button title when viewable | `ViewerLocalizations.of(context).viewTitle` |
-| buttonStyle | `ButtonStyle?` | Button style | See source file |
-| btnTitleColor | `Color？` | The color of the text of the button | `Colors.white`|
-| btnBgColor | `Color？` | The color of the button's background | `Theme.of(context).primaryColor` |
-| progressSize | `double?` | Size of `CircularProgressIndicator` | `60.0` |
-| progressStrokeWidth | `double?` | `strokeWidth` of `CircularProgressIndicator` | `6.0` |
-| progressBackgroundColor | `Color？` | Background color of `CircularProgressIndicator`  | `Theme.of(context).primaryColor`|
-| progressValueColor | `Color？` | The value color of `CircularProgressIndicator` | `Colors.tealAccent` |
+| Name                    | Type                    | Description                                                                      | Default                                                                       |
+|-------------------------|-------------------------|----------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| downloadUrl             | `String`                | Download link for file                                                           | Required                                                                      |
+| downloadPath            | `String`                | The file storage address is used to determine whether the file can be downloaded | Required                                                                      |
+| onViewPressed           | `VoidCallback`          | File viewing function                                                            | Required                                                                      |
+| placeholder             | `Widget?`               | Widget displayed while the target [downloadUrl] is loading.                      | `CupertinoActivityIndicator(radius: 14.0)`                                    |
+| fileSizeData            | `dynamic`               | Parameter `data` of `FlutterFileView.getFileSize`                                | `null`                                                                        |
+| fileSizeQueryParameters | `Map<String, dynamic>?` | Parameter `queryParameters` of `FlutterFileView.getFileSize`                     | `null`                                                                        |
+| fileSizeOptions         | `Options?`              | Parameter `options` of `FlutterFileView.getFileSize`                             | `null`                                                                        |
+| fileSizeTip             | `String?`               | Parameter `fileSizeTip` of `FlutterFileView.getFileSize`                         | `ViewerLocalizations.of(context).fileSizeTip`                                 |
+| fileSizeFailTip         | `String?`               | Parameter `fileSizeFailTip` of `FlutterFileView.getFileSize`                     | `ViewerLocalizations.of(context).fileSizeFailTip`                             |
+| fileSizeErrorTip        | `String?`               | Parameter `fileSizeErrorTip` of `FlutterFileView.getFileSize`                    | `ViewerLocalizations.of(context).fileSizeErrorTip`                            |
+| downloadQueryParameters | `Map<String, dynamic>?` | Parameter `queryParameters` of `FlutterFileView.downloadFile`                    | `null`                                                                        |
+| downloadDeleteOnError   | `bool?`                 | Parameter `deleteOnError` of `FlutterFileView.downloadFile`                      | `true`                                                                        |
+| downloadLengthHeader    | `String?`               | Parameter `lengthHeader` of `FlutterFileView.downloadFile`                       | `Headers.contentLengthHeader`                                                 |
+| downloadData            | `dynamic`               | Parameter `data` of `FlutterFileView.downloadFile`                               | `null`                                                                        |
+| downloadOptions         | `Options?`              | Parameter `options` of `FlutterFileView.downloadFile`                            | `null`                                                                        |
+| fileNameStyle           | `TextStyle?`            | The style of the displayed file name                                             | `Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight:FontWeight.bold)` |
+| fileSizeStyle           | `TextStyle?`            | The style of the displayed file size                                             | `Theme.of(context).textTheme.bodyText2`                                       |
+| downloadTitle           | `String?`               | Button title when downloadable                                                   | `ViewerLocalizations.of(context).downloadTitle`                               |
+| viewTitle               | `String?`               | Button title when viewable                                                       | `ViewerLocalizations.of(context).viewTitle`                                   |
+| buttonStyle             | `ButtonStyle?`          | Button style                                                                     | See source file                                                               |
+| btnTitleColor           | `Color？`                | The color of the text of the button                                              | `Colors.white`                                                                |
+| btnBgColor              | `Color？`                | The color of the button's background                                             | `Theme.of(context).primaryColor`                                              |
+| progressSize            | `double?`               | Size of `CircularProgressIndicator`                                              | `60.0`                                                                        |
+| progressStrokeWidth     | `double?`               | `strokeWidth` of `CircularProgressIndicator`                                     | `6.0`                                                                         |
+| progressBackgroundColor | `Color？`                | Background color of `CircularProgressIndicator`                                  | `Theme.of(context).primaryColor`                                              |
+| progressValueColor      | `Color？`                | The value color of `CircularProgressIndicator`                                   | `Colors.tealAccent`                                                           |
 
 ## Future Plans
 

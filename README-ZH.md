@@ -109,16 +109,16 @@ android:usesCleartextTraffic="true"
 
 ### 使用方法
 
-| 参数名 | 类型 | 描述 | 默认值 |
-| --- | --- | --- | --- |
-| filePath | `String` | 本地文件路径 | 必填项 |
-| placeholder | `Widget?` | 加载状态的部件 | `CupertinoActivityIndicator(radius: 14.0)` |
-| unsupportedPlatformWidget | `Widget?` | 在不支持的平台上显示的部件 | `Center(child: Text(ViewerLocalizations.of(context).unsupportedPlatformTip))` |
-| nonExistentWidget | `Widget?` | 当文件不存在时显示的部件 | `Center(child: Text(ViewerLocalizations.of(context).nonExistentTip))` |
-| unsupportedTypeWidget | `Widget` | 当文件为不支持的类型时显示的部件 | `Center(child: Text(ViewerLocalizations.of(context).unsupportedType))` |
-| isBarShow | `bool` | `TbsReaderView.openFile` 所携带参数 `is_bar_show` | `false` |
-| intoDownloading | `bool` | `TbsReaderView.openFile` 所携带参数 `into_downloading` | `false` |
-| isBarAnimating | `bool` | `TbsReaderView.openFile` 所携带参数 `is_bar_animating` | `false` |
+| 参数名                       | 类型        | 描述                                                | 默认值                                                                           |
+|---------------------------|-----------|---------------------------------------------------|-------------------------------------------------------------------------------|
+| filePath                  | `String`  | 本地文件路径                                            | 必填项                                                                           |
+| placeholder               | `Widget?` | 加载状态的部件                                           | `CupertinoActivityIndicator(radius: 14.0)`                                    |
+| unsupportedPlatformWidget | `Widget?` | 在不支持的平台上显示的部件                                     | `Center(child: Text(ViewerLocalizations.of(context).unsupportedPlatformTip))` |
+| nonExistentWidget         | `Widget?` | 当文件不存在时显示的部件                                      | `Center(child: Text(ViewerLocalizations.of(context).nonExistentTip))`         |
+| unsupportedTypeWidget     | `Widget`  | 当文件为不支持的类型时显示的部件                                  | `Center(child: Text(ViewerLocalizations.of(context).unsupportedType))`        |
+| isBarShow                 | `bool`    | `TbsReaderView.openFile` 所携带参数 `is_bar_show`      | `false`                                                                       |
+| intoDownloading           | `bool`    | `TbsReaderView.openFile` 所携带参数 `into_downloading` | `false`                                                                       |
+| isBarAnimating            | `bool`    | `TbsReaderView.openFile` 所携带参数 `is_bar_animating` | `false`                                                                       |
 
 ### Android特殊说明
 
@@ -145,34 +145,34 @@ FlutterFileView.initController.listen((res) {
 
 ### 使用方法
 
-| 参数名 | 类型 | 描述 | 默认值 |
-| --- | --- | --- | --- |
-| downloadUrl | `String` | 下载文件链接 | 必填项 |
-| downloadPath | `String` | 下载文件存储地址 | 必填项 |
-| onViewPressed | `VoidCallback` | 文件查看功能 | 必填项 |
-| placeholder | `Widget?` | 加载状态的部件 | `CupertinoActivityIndicator(radius: 14.0)` |
-| fileSizeData | `dynamic` | `FlutterFileView.getFileSize` 参数 `data` | `null` |
-| fileSizeQueryParameters | `Map<String, dynamic>?` | `FlutterFileView.getFileSize` 参数 `queryParameters` | `null` |
-| fileSizeOptions | `Options?` | `FlutterFileView.getFileSize` 参数 `options` | `null` |
-| fileSizeTip | `String?` | `FlutterFileView.getFileSize` 参数 `fileSizeTip` | `ViewerLocalizations.of(context).fileSizeTip` |
-| fileSizeFailTip | `String?` | `FlutterFileView.getFileSize` 参数 `fileSizeFailTip` | `ViewerLocalizations.of(context).fileSizeFailTip` |
-| fileSizeErrorTip | `String?` | `FlutterFileView.getFileSize` 参数 `fileSizeErrorTip` | `ViewerLocalizations.of(context).fileSizeErrorTip` |
-| downloadQueryParameters | `Map<String, dynamic>?` | `FlutterFileView.downloadFile` 参数 `queryParameters` | `null` |
-| downloadDeleteOnError | `bool?` | `FlutterFileView.downloadFile` 参数 `deleteOnError` | `true` |
-| downloadLengthHeader | `String?` | `FlutterFileView.downloadFile` 参数 `lengthHeader` | `Headers.contentLengthHeader` |
-| downloadData | `dynamic` | `FlutterFileView.downloadFile` 参数 `data` | `null` |
-| downloadOptions | `Options?` | `FlutterFileView.downloadFile` 参数 `options` | `null` |
-| fileNameStyle | `TextStyle?` | 文件名称的样式 | `Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight:FontWeight.bold)` |
-| fileSizeStyle | `TextStyle?` | 文件资源大小的文字的样式 | `Theme.of(context).textTheme.bodyText2` |
-| downloadTitle | `String?` | 可下载时的按钮标题 | `ViewerLocalizations.of(context).downloadTitle` |
-| viewTitle | `String?` | 可查看时的按钮标题 | `ViewerLocalizations.of(context).viewTitle` |
-| buttonStyle | `ButtonStyle?` | 按钮样式 | 见源文件 |
-| btnTitleColor | `Color？` | 按钮文字颜色 | `Colors.white`|
-| btnBgColor | `Color？` | 按钮背景颜色 | `Theme.of(context).primaryColor` |
-| progressSize | `double?` | `CircularProgressIndicator` 尺寸 | `60.0` |
-| progressStrokeWidth | `double?` | `CircularProgressIndicator` 的 `strokeWidth` | `6.0` |
-| progressBackgroundColor | `Color？` | `CircularProgressIndicator` 背景色 | `Theme.of(context).primaryColor`|
-| progressValueColor | `Color？` | `CircularProgressIndicator` 当前值颜色 | `Colors.tealAccent` |
+| 参数名                     | 类型                      | 描述                                                  | 默认值                                                                           |
+|-------------------------|-------------------------|-----------------------------------------------------|-------------------------------------------------------------------------------|
+| downloadUrl             | `String`                | 下载文件链接                                              | 必填项                                                                           |
+| downloadPath            | `String`                | 下载文件存储地址                                            | 必填项                                                                           |
+| onViewPressed           | `VoidCallback`          | 文件查看功能                                              | 必填项                                                                           |
+| placeholder             | `Widget?`               | 加载状态的部件                                             | `CupertinoActivityIndicator(radius: 14.0)`                                    |
+| fileSizeData            | `dynamic`               | `FlutterFileView.getFileSize` 参数 `data`             | `null`                                                                        |
+| fileSizeQueryParameters | `Map<String, dynamic>?` | `FlutterFileView.getFileSize` 参数 `queryParameters`  | `null`                                                                        |
+| fileSizeOptions         | `Options?`              | `FlutterFileView.getFileSize` 参数 `options`          | `null`                                                                        |
+| fileSizeTip             | `String?`               | `FlutterFileView.getFileSize` 参数 `fileSizeTip`      | `ViewerLocalizations.of(context).fileSizeTip`                                 |
+| fileSizeFailTip         | `String?`               | `FlutterFileView.getFileSize` 参数 `fileSizeFailTip`  | `ViewerLocalizations.of(context).fileSizeFailTip`                             |
+| fileSizeErrorTip        | `String?`               | `FlutterFileView.getFileSize` 参数 `fileSizeErrorTip` | `ViewerLocalizations.of(context).fileSizeErrorTip`                            |
+| downloadQueryParameters | `Map<String, dynamic>?` | `FlutterFileView.downloadFile` 参数 `queryParameters` | `null`                                                                        |
+| downloadDeleteOnError   | `bool?`                 | `FlutterFileView.downloadFile` 参数 `deleteOnError`   | `true`                                                                        |
+| downloadLengthHeader    | `String?`               | `FlutterFileView.downloadFile` 参数 `lengthHeader`    | `Headers.contentLengthHeader`                                                 |
+| downloadData            | `dynamic`               | `FlutterFileView.downloadFile` 参数 `data`            | `null`                                                                        |
+| downloadOptions         | `Options?`              | `FlutterFileView.downloadFile` 参数 `options`         | `null`                                                                        |
+| fileNameStyle           | `TextStyle?`            | 文件名称的样式                                             | `Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight:FontWeight.bold)` |
+| fileSizeStyle           | `TextStyle?`            | 文件资源大小的文字的样式                                        | `Theme.of(context).textTheme.bodyText2`                                       |
+| downloadTitle           | `String?`               | 可下载时的按钮标题                                           | `ViewerLocalizations.of(context).downloadTitle`                               |
+| viewTitle               | `String?`               | 可查看时的按钮标题                                           | `ViewerLocalizations.of(context).viewTitle`                                   |
+| buttonStyle             | `ButtonStyle?`          | 按钮样式                                                | 见源文件                                                                          |
+| btnTitleColor           | `Color？`                | 按钮文字颜色                                              | `Colors.white`                                                                |
+| btnBgColor              | `Color？`                | 按钮背景颜色                                              | `Theme.of(context).primaryColor`                                              |
+| progressSize            | `double?`               | `CircularProgressIndicator` 尺寸                      | `60.0`                                                                        |
+| progressStrokeWidth     | `double?`               | `CircularProgressIndicator` 的 `strokeWidth`         | `6.0`                                                                         |
+| progressBackgroundColor | `Color？`                | `CircularProgressIndicator` 背景色                     | `Theme.of(context).primaryColor`                                              |
+| progressValueColor      | `Color？`                | `CircularProgressIndicator` 当前值颜色                   | `Colors.tealAccent`                                                           |
 
 ## 未来计划
 
