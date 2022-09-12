@@ -206,7 +206,7 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         if (mFlutterPluginBinding != null) {
             mFlutterPluginBinding!!.platformViewRegistry.registerViewFactory(
                 viewName,
-                LocalFileViewerFactory(binding.activity)
+                LocalFileViewerFactory(binding.activity, mFlutterPluginBinding!!.binaryMessenger)
             )
         }
     }

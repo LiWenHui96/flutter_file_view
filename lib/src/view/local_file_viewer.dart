@@ -122,6 +122,10 @@ class _LocalFileViewerState extends State<LocalFileViewer> {
         'into_downloading': widget.intoDownloading,
         'is_bar_animating': widget.isBarAnimating,
       },
+      onPlatformViewCreated: (int id) {
+        final MethodChannel channel = MethodChannel('${channelName}_$id');
+        channel.invokeMethod<void>('refreshTbsReaderView');
+      },
       creationParamsCodec: const StandardMessageCodec(),
     );
   }

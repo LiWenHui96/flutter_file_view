@@ -4,9 +4,13 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.tencent.smtt.sdk.TbsReaderView
 import com.tencent.smtt.sdk.TbsReaderView.*
 import io.flutter.Log
+import io.flutter.plugin.common.BinaryMessenger
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
 import java.io.File
 
@@ -15,16 +19,39 @@ import java.io.File
  * @date 2022/2/15
  * @describe LocalFileView
  */
-class LocalFileViewer internal constructor(context: Context, args: Map<String, Any>) : PlatformView,
-    ReaderCallback {
+class LocalFileViewer internal constructor(
+    context: Context,
+    messenger: BinaryMessenger,
+    viewId: Int,
+    args: Map<String, Any>
+) : PlatformView, MethodChannel.MethodCallHandler, ReaderCallback {
+    private var channel: MethodChannel
+    private var mContext: Context
+    private var mArgs: Map<String, Any>
+
     private val tempPrefixPath = context.cacheDir.toString() + File.separator + "TbsFileReaderTmp"
 
-    private var mTbsReaderView: TbsReaderView = TbsReaderView(context, this)
+    private var mFrameLayout: FrameLayout? = null
+    private var mTbsReaderView: TbsReaderView? = null
+
+    /**
+     * Preparations for opening the file
+     */
+    private fun readyToOpenFile() {
+        mTbsReaderView = TbsReaderView(mContext, this)
+        mTbsReaderView?.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+
+        mFrameLayout?.addView(mTbsReaderView)
+        if (isSupportFile()) openFile()
+    }
 
     /**
      * Open File
      */
-    private fun openFile(args: Map<String, Any>) {
+    private fun openFile() {
         val tempFile = File(tempPrefixPath)
         if (!tempFile.exists() || !tempFile.isDirectory) {
             tempFile.mkdir()
@@ -32,12 +59,12 @@ class LocalFileViewer internal constructor(context: Context, args: Map<String, A
 
         // 加载文件
         val bundle = Bundle()
-        bundle.putString(KEY_FILE_PATH, args[KEY_FILE_PATH] as String)
-        bundle.putBoolean(IS_BAR_SHOWING, args[IS_BAR_SHOWING] as Boolean)
-        bundle.putBoolean(IS_INTO_DOWNLOADING, args[IS_INTO_DOWNLOADING] as Boolean)
-        bundle.putBoolean(IS_BAR_ANIMATING, args[IS_BAR_ANIMATING] as Boolean)
+        bundle.putString(KEY_FILE_PATH, mArgs[KEY_FILE_PATH] as String)
+        bundle.putBoolean(IS_BAR_SHOWING, mArgs[IS_BAR_SHOWING] as Boolean)
+        bundle.putBoolean(IS_INTO_DOWNLOADING, mArgs[IS_INTO_DOWNLOADING] as Boolean)
+        bundle.putBoolean(IS_BAR_ANIMATING, mArgs[IS_BAR_ANIMATING] as Boolean)
         bundle.putString(KEY_TEMP_PATH, tempPrefixPath)
-        mTbsReaderView.openFile(bundle)
+        mTbsReaderView?.openFile(bundle)
     }
 
     /**
@@ -45,23 +72,46 @@ class LocalFileViewer internal constructor(context: Context, args: Map<String, A
      *
      * @return
      */
-    private fun isSupportFile(fileType: String?): Boolean {
-        if (fileType == null) return false
-        return mTbsReaderView.preOpen(fileType, false)
+    private fun isSupportFile(): Boolean {
+        val fileType: String = mArgs["fileType"] as String? ?: return false
+        return mTbsReaderView?.preOpen(fileType, false) ?: false
+    }
+
+    /**
+     * Reset TbsReaderView
+     */
+    private fun refreshTbsReaderView() {
+        if (mTbsReaderView != null) {
+            mFrameLayout?.removeView(mTbsReaderView)
+            mTbsReaderView?.onStop()
+            mTbsReaderView = null
+        }
+
+        readyToOpenFile()
+        mFrameLayout?.requestLayout()
     }
 
     override fun getView(): View {
-        return mTbsReaderView
+        return mFrameLayout!!
     }
 
     override fun dispose() {
         Log.i(TAG, "$TAG Dispose")
 
-        mTbsReaderView.onStop()
+        mTbsReaderView?.onStop()
+        channel.setMethodCallHandler(null)
+        mTbsReaderView = null
+        mFrameLayout = null
+    }
+
+    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        when (call.method) {
+            "refreshTbsReaderView" -> refreshTbsReaderView()
+            else -> result.notImplemented()
+        }
     }
 
     override fun onCallBackAction(p0: Int?, p1: Any?, p2: Any?) {
-        TODO("Not yet implemented")
     }
 
     companion object {
@@ -69,13 +119,19 @@ class LocalFileViewer internal constructor(context: Context, args: Map<String, A
     }
 
     init {
+        mContext = context
+        mArgs = args
+
+        channel = MethodChannel(messenger, "${FlutterFileViewPlugin.channelName}_$viewId")
+        channel.setMethodCallHandler(this)
+
         Log.i(TAG, "$TAG Start")
 
-        mTbsReaderView.layoutParams = ViewGroup.LayoutParams(
+        mFrameLayout = FrameLayout(context)
+        mFrameLayout?.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-
-        if (isSupportFile(args["fileType"] as String?)) openFile(args)
+        readyToOpenFile()
     }
 }
