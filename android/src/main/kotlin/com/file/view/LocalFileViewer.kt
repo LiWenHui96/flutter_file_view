@@ -85,10 +85,12 @@ class LocalFileViewer internal constructor(
             mFrameLayout?.removeView(mTbsReaderView)
             mTbsReaderView?.onStop()
             mTbsReaderView = null
-        }
 
-        readyToOpenFile()
-        mFrameLayout?.requestLayout()
+            readyToOpenFile()
+            mFrameLayout?.requestLayout()
+        } else {
+            readyToOpenFile()
+        }
     }
 
     override fun getView(): View {
@@ -132,6 +134,5 @@ class LocalFileViewer internal constructor(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-        readyToOpenFile()
     }
 }
