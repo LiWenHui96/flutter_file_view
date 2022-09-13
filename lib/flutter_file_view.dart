@@ -1,5 +1,3 @@
-export 'package:dio/dio.dart';
-
 export 'src/enum/download_status.dart';
 export 'src/enum/view_type.dart';
 export 'src/enum/x5_status.dart';
