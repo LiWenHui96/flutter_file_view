@@ -42,6 +42,8 @@ class FlutterFileView {
     return null;
   }
 
+  static int currentAndroidViewLength = 0;
+
   static Future<void> downloadFile(
     String fileUrl,
     String filePath, {

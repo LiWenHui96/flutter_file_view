@@ -80,16 +80,14 @@ class LocalFileViewer internal constructor(
     /**
      * Reset TbsReaderView
      */
-    private fun refreshTbsReaderView() {
-        if (mTbsReaderView != null) {
+    private fun openTbsReaderView(isFirst: Boolean) {
+        if (!isFirst) {
             mFrameLayout?.removeView(mTbsReaderView)
             mTbsReaderView?.onStop()
             mTbsReaderView = null
 
             readyToOpenFile()
             mFrameLayout?.requestLayout()
-        } else {
-            readyToOpenFile()
         }
     }
 
@@ -108,7 +106,7 @@ class LocalFileViewer internal constructor(
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "refreshTbsReaderView" -> refreshTbsReaderView()
+            "openFile" -> openTbsReaderView(call.arguments())
             else -> result.notImplemented()
         }
     }
@@ -134,5 +132,7 @@ class LocalFileViewer internal constructor(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
+
+        readyToOpenFile()
     }
 }

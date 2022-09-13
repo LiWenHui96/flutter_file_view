@@ -53,6 +53,13 @@ class _LocalFileViewerState extends State<LocalFileViewer> {
   late ViewerLocalizations local = ViewerLocalizations.of(context);
 
   @override
+  void dispose() {
+    FlutterFileView.currentAndroidViewLength = 0;
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<ViewType>(
       future: getViewType(),
@@ -124,7 +131,8 @@ class _LocalFileViewerState extends State<LocalFileViewer> {
       },
       onPlatformViewCreated: (int id) {
         final MethodChannel channel = MethodChannel('${channelName}_$id');
-        channel.invokeMethod<void>('refreshTbsReaderView');
+        channel.invokeMethod<void>(
+            'openFile', FlutterFileView.currentAndroidViewLength++ == 0);
       },
       creationParamsCodec: const StandardMessageCodec(),
     );
