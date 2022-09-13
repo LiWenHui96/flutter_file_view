@@ -1,3 +1,7 @@
+## 2.0.8+1
+
+* Fixed the issue that the plugin could not be loaded when it was first opened.
+
 ## 2.0.8
 
 * On the Android platform, it supports opening two TbsReaderViews, but it is still not supported to display multiple TbsReaderViews under the same widget;
