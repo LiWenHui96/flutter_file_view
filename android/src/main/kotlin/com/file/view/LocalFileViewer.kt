@@ -106,7 +106,7 @@ class LocalFileViewer internal constructor(
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "openFile" -> openTbsReaderView(call.arguments())
+            "openFile" -> openTbsReaderView(call.arguments() ?: true)
             else -> result.notImplemented()
         }
     }
