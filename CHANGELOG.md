@@ -1,3 +1,7 @@
+## 2.0.8+4
+
+* Fix [#10](https://github.com/LiWenHui96/flutter_file_view/issues/10).
+
 ## 2.0.8+3
 
 * Fix known issues.
