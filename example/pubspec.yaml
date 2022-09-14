@@ -3,7 +3,7 @@ description: Demonstrates how to use the flutter_file_view plugin.
 
 publish_to: 'none'
 
-version: 2.0.8+31
+version: 2.0.8+32
 
 environment:
   sdk: ">=2.14.0 <3.0.0"
