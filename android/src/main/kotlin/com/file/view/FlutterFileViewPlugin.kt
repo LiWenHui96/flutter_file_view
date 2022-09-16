@@ -55,6 +55,11 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
         resetQbSdk()
 
+        QbSdk.canGetAndroidId(false)
+        QbSdk.canGetDeviceId(false)
+        QbSdk.canGetSubscriberId(false)
+        QbSdk.disableSensitiveApi()
+
         // 在调用TBS初始化、创建WebView之前进行如下配置，以开启优化方案
         val map = HashMap<String, Any>()
         map[TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER] = true
