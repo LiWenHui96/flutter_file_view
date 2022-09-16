@@ -1,3 +1,7 @@
+## 2.0.8+5
+
+* Rollback TBS version to 44085.
+
 ## 2.0.8+4
 
 * Fix [#10](https://github.com/LiWenHui96/flutter_file_view/issues/10).
