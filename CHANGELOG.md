@@ -1,3 +1,7 @@
+## 2.0.8+6
+
+* Number of retries to remove X5 installations.
+
 ## 2.0.8+5
 
 * Rollback TBS version to 44085.
