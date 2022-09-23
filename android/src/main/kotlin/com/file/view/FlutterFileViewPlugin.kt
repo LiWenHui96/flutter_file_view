@@ -20,7 +20,6 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     private var x5Status: Int = X5Status.NONE
     private var mContext: Context? = null
-    private var nowDownCount = 0
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, channelName)
@@ -55,10 +54,6 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
         resetQbSdk()
 
-        QbSdk.canGetAndroidId(false)
-        QbSdk.canGetDeviceId(false)
-        QbSdk.canGetSubscriberId(false)
-
         // 在调用TBS初始化、创建WebView之前进行如下配置，以开启优化方案
         val map = HashMap<String, Any>()
         map[TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER] = true
@@ -74,11 +69,6 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     if (i == 100 || i == 0) X5Status.DOWNLOAD_SUCCESS else X5Status.DOWNLOAD_FAIL
                 handleMessage(handler)
                 Log.i(TAG, "TBS download complete - " + i + showStatus(i == 100 || i == 0))
-                if (x5Status == X5Status.DOWNLOAD_FAIL && nowDownCount <= maxDownCount) {
-                    // After the download fails, try downloading again.
-                    TbsDownloader.startDownload(mContext)
-                    nowDownCount++
-                }
             }
 
             override fun onInstallFinish(i: Int) {
@@ -197,9 +187,6 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     companion object {
         val TAG: String = FlutterFileViewPlugin::class.java.name
-
-        // Number of times to try to redownload.
-        private const val maxDownCount = 10
 
         const val channelName = "flutter_file_view.io.channel/method"
         const val viewName = "flutter_file_view.io.view/local"
