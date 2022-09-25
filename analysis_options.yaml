@@ -49,7 +49,7 @@ analyzer:
     # Allow null checks for as long as mixed mode is officially supported.
     always_require_non_null_named_parameters: false # not needed with nnbd
   exclude:
-  # Ignore generated files
+    # Ignore generated files
 
 # This list is derived from the list of all available lints located at
 # https://github.com/dart-lang/linter/blob/master/example/all.yaml

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -133,28 +134,6 @@ class _FileViewState extends State<FileView> {
         );
   }
 
-  /// The layout to display when complete.
-  Widget _buildDoneWidget() {
-    if (isAndroid) {
-      return Container();
-    } else if (isIOS) {
-      return _createIosView();
-    }
-
-    return _buildUnSupportPlatformWidget();
-  }
-
-  Widget _createIosView() {
-    return UiKitView(
-      viewType: viewName,
-      creationParams: <String, String>{
-        'filePath': widget.controller.value.filePath ?? '',
-        'fileType': widget.controller.value.fileType ?? '',
-      },
-      creationParamsCodec: const StandardMessageCodec(),
-    );
-  }
-
   /// Widgets for presenting information
   Widget showTipWidget(String tip) {
     return Center(child: Text(tip, style: widget.tipTextStyle));
@@ -163,6 +142,103 @@ class _FileViewState extends State<FileView> {
   /// A replacement operation for [stringTf].
   String sprintf(String stringTf, String msg) {
     return stringTf.replaceAll('%s', msg);
+  }
+
+  /// The layout to display when complete.
+  Widget _buildDoneWidget() {
+    if (isAndroid) {
+      return _createAndroidView();
+    } else if (isIOS) {
+      return UiKitView(
+        viewType: viewName,
+        creationParams: <String, String>{
+          'filePath': widget.controller.value.filePath ?? '',
+          'fileType': widget.controller.value.fileType ?? '',
+        },
+        creationParamsCodec: const StandardMessageCodec(),
+      );
+    }
+
+    return _buildUnSupportPlatformWidget();
+  }
+
+  Widget _createAndroidView() {
+    switch (widget.controller.value.x5status) {
+      case X5Status.DONE:
+        return AndroidView(
+          viewType: viewName,
+          creationParams: <String, dynamic>{
+            'filePath': widget.controller.value.filePath,
+            'fileType': widget.controller.value.fileType,
+            'is_bar_show': widget.controller._androidViewConfig.isBarShow,
+            'into_downloading':
+                widget.controller._androidViewConfig.intoDownloading,
+            'is_bar_animating':
+                widget.controller._androidViewConfig.isBarAnimating,
+          },
+          onPlatformViewCreated: (int id) {
+            MethodChannel('${channelName}_$id').invokeMethod<void>(
+              'openFile',
+              FlutterFileView.currentAndroidViewNumber++ == 0,
+            );
+          },
+          creationParamsCodec: const StandardMessageCodec(),
+        );
+      case X5Status.ERROR:
+        return showX5RetryWidget(local.engineFail);
+      case X5Status.DOWNLOAD_SUCCESS:
+        return showX5TipWidget(local.engineDownloadSuccess);
+      case X5Status.DOWNLOAD_FAIL:
+        return showX5RetryWidget(local.engineDownloadFail);
+      case X5Status.DOWNLOADING:
+        return showX5TipWidget(local.engineDownloading);
+      case X5Status.DOWNLOAD_NON_REQUIRED:
+        return showTipWidget(local.engineDownloadNonRequired);
+      case X5Status.DOWNLOAD_OUT_OF_ONE:
+        return showTipWidget(local.engineDownloadOutOfOne);
+      case X5Status.INSTALL_SUCCESS:
+        return showX5TipWidget(local.engineInstallSuccess);
+      case X5Status.INSTALL_FAIL:
+        return showX5RetryWidget(local.engineInstallFail);
+      // ignore: no_default_cases
+      default:
+        return showX5TipWidget(local.engineLoading);
+    }
+  }
+
+  /// Widgets for presenting information of x5Status.
+  Widget showX5TipWidget(String tip) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          CircularProgressIndicator(
+            key: ValueKey<String>('FileView_${hashCode}_X5_Placeholder'),
+            value: widget.controller.value.progressValue,
+          ),
+          const SizedBox(height: 20),
+          Text(tip, style: widget.tipTextStyle),
+        ],
+      ),
+    );
+  }
+
+  Widget showX5RetryWidget(String tip) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(tip, style: widget.tipTextStyle),
+          const SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: () {
+              widget.controller.initializeForAndroid();
+            },
+            child: Text(local.retry, style: widget.tipTextStyle),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -182,6 +258,7 @@ class FileViewController extends ValueNotifier<FileViewValue> {
   FileViewController.asset(
     this.dataSource, {
     this.package,
+    this.androidViewConfig,
     this.isDelExist = false,
   })  : dataSourceType = DataSourceType.asset,
         networkConfig = null,
@@ -195,6 +272,7 @@ class FileViewController extends ValueNotifier<FileViewValue> {
   FileViewController.network(
     this.dataSource, {
     NetworkConfig? config,
+    this.androidViewConfig,
     this.isDelExist = false,
   })  : dataSourceType = DataSourceType.network,
         package = null,
@@ -202,8 +280,11 @@ class FileViewController extends ValueNotifier<FileViewValue> {
         super(FileViewValue.uninitialized());
 
   /// Constructs a [FileViewController] preview a document from a file.
-  FileViewController.file(File file, {this.isDelExist = false})
-      : dataSource = file.path,
+  FileViewController.file(
+    File file, {
+    this.androidViewConfig,
+    this.isDelExist = false,
+  })  : dataSource = file.path,
         dataSourceType = DataSourceType.file,
         package = null,
         networkConfig = null,
@@ -232,8 +313,15 @@ class FileViewController extends ValueNotifier<FileViewValue> {
   /// Always empty for other document types.
   final NetworkConfig? networkConfig;
 
+  /// The relevant parameters of TbsReaderView.
+  final AndroidViewConfig? androidViewConfig;
+
   /// Whether to delete files with the same path.
   final bool isDelExist;
+
+  /// Parameters supplied to _createAndroidView to use.
+  AndroidViewConfig get _androidViewConfig =>
+      androidViewConfig ?? AndroidViewConfig();
 
   /// Attempts to open the given [dataSource] and load metadata about
   /// the document.
@@ -289,10 +377,10 @@ class FileViewController extends ValueNotifier<FileViewValue> {
       value = value.copyWith(fileType: fileType);
 
       if (FileViewTools.isSupportByType(fileType)) {
+        value = value.copyWith(viewType: ViewType.DONE, filePath: filePath);
+
         if (isAndroid) {
           await initializeForAndroid();
-        } else if (isIOS) {
-          value = value.copyWith(viewType: ViewType.DONE, filePath: filePath);
         }
       } else {
         value = value.copyWith(viewType: ViewType.UNSUPPORTED_FILETYPE);
@@ -302,11 +390,40 @@ class FileViewController extends ValueNotifier<FileViewValue> {
     }
   }
 
+  /// Monitor the loading status of X5 kernel.
+  StreamSubscription<X5Status>? x5StatusListener;
+
+  /// Monitor the download status of X5 kernel.
+  StreamSubscription<int>? downloadListener;
+
   /// Because Android uses the X5 engine, it needs to be operated separately.
   Future<void> initializeForAndroid() async {
     final X5Status x5Status = await FlutterFileView.x5Status();
+    value = value.copyWith(x5status: x5Status);
 
-    FlutterFileView.initController.listen((_) {});
+    if (x5Status != X5Status.DONE) {
+      if (x5Status == X5Status.NONE) {
+        FlutterFileView.init();
+      }
+
+      x5StatusListener = FlutterFileView.initController.listen((_) {
+        if (_ == X5Status.DOWNLOADING) {
+          downloadListener = FlutterFileView.downlodController.listen((__) {
+            value = value.copyWith(x5status: _, progressValue: __ / 100);
+          });
+        } else {
+          value = value.copyWith(x5status: _);
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    x5StatusListener?.cancel();
+    downloadListener?.cancel();
+
+    super.dispose();
   }
 }
 
@@ -317,6 +434,7 @@ class FileViewValue {
   /// The rest will initialize with default values when unset.
   FileViewValue({
     required this.viewType,
+    this.x5status = X5Status.NONE,
     this.filePath,
     this.fileType,
     this.progressValue,
@@ -327,6 +445,9 @@ class FileViewValue {
 
   /// The loaded state of the view.
   final ViewType viewType;
+
+  /// The state of X5 kernel.
+  final X5Status x5status;
 
   /// The path where the file is stored.
   final String? filePath;
@@ -341,12 +462,14 @@ class FileViewValue {
   /// except for any overrides passed in as arguments to [copyWith].
   FileViewValue copyWith({
     ViewType? viewType,
+    X5Status? x5status,
     String? filePath,
     String? fileType,
     double? progressValue,
   }) {
     return FileViewValue(
       viewType: viewType ?? this.viewType,
+      x5status: x5status ?? this.x5status,
       filePath: filePath ?? this.filePath,
       fileType: fileType ?? this.fileType,
       progressValue: progressValue,
@@ -400,4 +523,23 @@ class NetworkConfig {
 
   /// [Dio.download] `options`
   final Options? options;
+}
+
+/// The relevant parameters of TbsReaderView.
+class AndroidViewConfig {
+  // ignore: public_member_api_docs
+  AndroidViewConfig({
+    this.isBarShow = false,
+    this.intoDownloading = false,
+    this.isBarAnimating = false,
+  });
+
+  /// The `is_bar_show` of TbsReaderView
+  final bool isBarShow;
+
+  /// The `into_downloading` of TbsReaderView
+  final bool intoDownloading;
+
+  /// The `is_bar_animating` of TbsReaderView
+  final bool isBarAnimating;
 }

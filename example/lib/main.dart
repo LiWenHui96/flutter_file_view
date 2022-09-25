@@ -6,11 +6,13 @@ import 'page_file_view.dart';
 
 void main() => runApp(const MyApp());
 
+// ignore: public_member_api_docs
 class MyApp extends StatefulWidget {
+  // ignore: public_member_api_docs
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -30,18 +32,20 @@ class _MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate,
         FileViewLocalizationsDelegate.delegate,
       ],
-      supportedLocales: [Locale('en', 'US'), Locale('zh', 'CN')],
+      supportedLocales: <Locale>[Locale('en', 'US'), Locale('zh', 'CN')],
       debugShowCheckedModeBanner: false,
       home: HomePage(),
     );
   }
 }
 
+// ignore: public_member_api_docs
 class HomePage extends StatefulWidget {
+  // ignore: public_member_api_docs
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -67,18 +71,18 @@ class _HomePageState extends State<HomePage> {
   Widget _buildBodyWidget() {
     return ListView.builder(
       itemCount: files.length,
-      itemBuilder: (context, index) {
-        String filePath = files[index];
+      itemBuilder: (BuildContext context, int index) {
+        final String filePath = files[index];
         String fileShowText = '';
 
-        int i = filePath.lastIndexOf('/');
+        final int i = filePath.lastIndexOf('/');
         if (i <= -1) {
           fileShowText = filePath;
         } else {
           fileShowText = filePath.substring(i + 1);
         }
 
-        final child = ElevatedButton(
+        final Widget child = ElevatedButton(
           onPressed: () {
             FileViewController? controller;
 
@@ -88,16 +92,18 @@ class _HomePageState extends State<HomePage> {
               controller = FileViewController.asset('assets/files/$filePath');
             }
 
-            Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-              return FileViewPage(controller: controller!);
-            }));
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => FileViewPage(controller: controller!),
+              ),
+            );
           },
           child: Text(fileShowText),
         );
 
         return Container(
-          margin: const EdgeInsets.only(top: 10.0),
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          margin: const EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: child,
         );
       },

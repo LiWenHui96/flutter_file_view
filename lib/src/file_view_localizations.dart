@@ -46,13 +46,28 @@ abstract class FileViewLocalizationsBase {
 
   String get unSupportedType => getItem('unSupportedType').toString();
 
-  String get engineLoading => getItem('engineLoading').toString();
+  String get retry => getItem('retry').toString();
 
   String get engineFail => getItem('engineFail').toString();
 
-  String get downloadTitle => getItem('downloadTitle').toString();
+  String get engineDownloadSuccess =>
+      getItem('engineDownloadSuccess').toString();
 
-  String get viewTitle => getItem('viewTitle').toString();
+  String get engineDownloadFail => getItem('engineDownloadFail').toString();
+
+  String get engineDownloading => getItem('engineDownloading').toString();
+
+  String get engineDownloadNonRequired =>
+      getItem('engineDownloadNonRequired').toString();
+
+  String get engineDownloadOutOfOne =>
+      getItem('engineDownloadOutOfOne').toString();
+
+  String get engineInstallSuccess => getItem('engineInstallSuccess').toString();
+
+  String get engineInstallFail => getItem('engineInstallFail').toString();
+
+  String get engineLoading => getItem('engineLoading').toString();
 }
 
 /// localizations
@@ -89,21 +104,37 @@ class FileViewLocalizations extends FileViewLocalizationsBase {
       <String, Map<String, Object>>{
     'en': <String, String>{
       'unSupportedPlatformTip': 'Only supports Android and iOS platforms.',
-      'nonExistentTip': 'Non-existent file',
-      'unSupportedType': 'Does not support opening files of type %s',
-      'engineLoading': 'Engine initializing, please wait...',
-      'engineFail': 'The engine failed to load, please restart the app',
-      'downloadTitle': 'Download',
-      'viewTitle': 'View'
+      'nonExistentTip': 'Non-existent file.',
+      'unSupportedType': 'Does not support opening files of type %s.',
+      'retry': 'Retry',
+      'engineFail': 'Failed to initialize engine, please try again.',
+      'engineDownloadSuccess':
+          'Engine download is complete, please wait for installation.',
+      'engineDownloadFail': 'Engine download failed, please try again.',
+      'engineDownloading': 'Engine downloading, please wait.',
+      'engineDownloadNonRequired':
+          'The engine cannot be downloaded temporarily, please restart.',
+      'engineDownloadOutOfOne':
+          'The engine has retried too many times, please restart.',
+      'engineInstallSuccess':
+          'Engine installation is complete, please wait for initialization.',
+      'engineInstallFail': 'Engine installation failed, please try again.',
+      'engineLoading': 'Engine initialization, please wait.',
     },
     'zh': <String, String>{
       'unSupportedPlatformTip': '仅支持Android和iOS平台',
       'nonExistentTip': '文件不存在',
       'unSupportedType': '不支持打开%s类型的文件',
-      'engineLoading': '引擎初始化中，请稍候...',
-      'engineFail': '引擎加载失败，请重启App',
-      'downloadTitle': '文件下载',
-      'viewTitle': '文件查看'
+      'retry': '重试',
+      'engineFail': '引擎初始化失败，请重试',
+      'engineDownloadSuccess': '引擎下载完成，请等待安装',
+      'engineDownloadFail': '引擎下载失败，请重试',
+      'engineDownloading': '引擎下载中，请稍候',
+      'engineDownloadNonRequired': '引擎暂时无法下载，请重启',
+      'engineDownloadOutOfOne': '引擎重试次数过多，请重启',
+      'engineInstallSuccess': '引擎安装完成，请等待初始化',
+      'engineInstallFail': '引擎安装失败，请重试',
+      'engineLoading': '引擎初始化中，请稍候',
     },
   };
 }

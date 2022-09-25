@@ -9,21 +9,18 @@ environment:
   sdk: ">=2.14.0 <3.0.0"
 
 dependencies:
+  cupertino_icons: ^1.0.4
   flutter:
     sdk: flutter
+  flutter_file_view:
+    path: ../
   flutter_localizations:
     sdk: flutter
 
-  flutter_file_view:
-    path: ../
-
-  cupertino_icons: ^1.0.4
-
 dev_dependencies:
+  flutter_lints: ^1.0.4
   flutter_test:
     sdk: flutter
-
-  flutter_lints: ^1.0.4
 
 flutter:
   uses-material-design: true
