@@ -1,27 +1,32 @@
 package com.file.view
 
 import android.content.Context
-import android.os.*
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.util.Log
-import androidx.annotation.NonNull
 import com.tencent.smtt.export.external.TbsCoreSettings
-import com.tencent.smtt.sdk.*
-
+import com.tencent.smtt.sdk.QbSdk
+import com.tencent.smtt.sdk.TbsListener
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
-import io.flutter.embedding.engine.plugins.activity.*
-import io.flutter.plugin.common.*
-import io.flutter.plugin.common.MethodChannel.*
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import io.flutter.plugin.common.MethodChannel.Result
 
 /** FlutterFileViewPlugin */
 class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private lateinit var channel: MethodChannel
     private var mFlutterPluginBinding: FlutterPluginBinding? = null
 
-    private var x5Status: Int = X5Status.NONE
+    private var x5Status: X5Status = X5Status.NONE
     private var mContext: Context? = null
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPluginBinding) {
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, channelName)
         channel.setMethodCallHandler(this)
 
@@ -29,58 +34,70 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         mContext = flutterPluginBinding.applicationContext
     }
 
-    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+    override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
-            "initX5" -> x5Start()
-            "getX5Status" -> result.success(nowX5Status)
-            "manualInitX5" -> manualInitX5()
+            "init" -> initX5Engine(call)
+            "x5Status" -> result.success(currentX5Status)
+            "getTemporaryPath" -> result.success(mContext?.cacheDir?.path)
             else -> result.notImplemented()
         }
     }
 
     /**
-     * Initialize X5
+     * Initialize X5 engine
      */
-    private fun x5Start() {
-        if (mContext == null) {
+    private fun initX5Engine(call: MethodCall) {
+        if (mContext == null || x5Status == X5Status.DONE || x5Status == X5Status.DOWNLOAD_OUT_OF_ONE) {
             return
         }
 
-        handleMessage(handler)
-
-        Log.i(TAG, "Start the initialization of X5")
-        x5Status = X5Status.START
-        handleMessage(handler)
+        // The status at this time is none.
+        handleX5StatusMessage(status = X5Status.NONE, msg = "ready for initialization")
 
         resetQbSdk()
 
-        // 在调用TBS初始化、创建WebView之前进行如下配置，以开启优化方案
-        val map = HashMap<String, Any>()
-        map[TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER] = true
-        map[TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE] = true
-        QbSdk.initTbsSettings(map)
+        val canDownloadWithoutWifi: Boolean =
+            call.argument<Boolean>("canDownloadWithoutWifi") ?: true
+        val canOpenDex2Oat: Boolean = call.argument<Boolean>("canOpenDex2Oat") ?: true
 
-        // Downloadable on mobile network
-        QbSdk.setDownloadWithoutWifi(true)
+        QbSdk.setDownloadWithoutWifi(canDownloadWithoutWifi)
+
+        if (canOpenDex2Oat) {
+            // 在调用TBS初始化、创建WebView之前进行如下配置，以开启优化方案
+            val map = HashMap<String, Any>()
+            map[TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER] = true
+            map[TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE] = true
+            QbSdk.initTbsSettings(map)
+        }
+
+        handleX5StatusMessage(
+            status = X5Status.START, msg = "Start the initialization of X5"
+        )
 
         QbSdk.setTbsListener(object : TbsListener {
-            override fun onDownloadFinish(i: Int) {
-                x5Status =
-                    if (i == 100 || i == 0) X5Status.DOWNLOAD_SUCCESS else X5Status.DOWNLOAD_FAIL
-                handleMessage(handler)
-                Log.i(TAG, "TBS download complete - " + i + showStatus(i == 100 || i == 0))
+            override fun onDownloadFinish(p0: Int) {
+                handleX5StatusMessage(
+                    status = when (p0) {
+                        100 -> X5Status.DOWNLOAD_SUCCESS
+                        110 -> X5Status.DOWNLOAD_NON_REQUIRED
+                        127 -> X5Status.DOWNLOAD_OUT_OF_ONE
+                        else -> X5Status.DOWNLOAD_FAIL
+                    }, msg = "TBS download complete - " + p0 + showStatus(p0 == 100)
+                )
             }
 
-            override fun onInstallFinish(i: Int) {
-                x5Status = if (i == 200) X5Status.INSTALL_SUCCESS else X5Status.INSTALL_FAIL
-                handleMessage(handler)
-                Log.i(TAG, "TBS installation completed - " + i + showStatus(i == 200))
+            override fun onInstallFinish(p0: Int) {
+                handleX5StatusMessage(
+                    status = if (p0 == 200) X5Status.INSTALL_SUCCESS else X5Status.INSTALL_FAIL,
+                    msg = "TBS installation completed - " + p0 + showStatus(p0 == 200)
+                )
             }
 
-            override fun onDownloadProgress(i: Int) {
-                x5Status =
-                    if (i in 1..100) X5Status.DOWNLOADING else X5Status.DOWNLOAD_FAIL
-                Log.i(TAG, "TBS download progress: $i")
+            override fun onDownloadProgress(p0: Int) {
+                handleX5StatusMessage(
+                    status = X5Status.DOWNLOADING, msg = "TBS download progress: $p0"
+                )
+                runMainThread(obj = p0, method = "x5DownloadProgress")
             }
         })
 
@@ -91,25 +108,43 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         )
     }
 
+    private val onQbSdkPreInitCallback: QbSdk.PreInitCallback = object : QbSdk.PreInitCallback {
+        override fun onCoreInitFinished() {
+            Log.i(TAG, "TBS kernel initialized")
+        }
+
+        override fun onViewInitFinished(b: Boolean) {
+            if (!b) resetQbSdk()
+
+            handleX5StatusMessage(
+                status = if (b) X5Status.DONE else X5Status.ERROR,
+                msg = "TBS kernel initialization" + showStatus(b) + " - " + QbSdk.canLoadX5(
+                    mContext
+                )
+            )
+        }
+    }
+
     /**
      * Reset QbSdk
      */
     private fun resetQbSdk() {
-        x5Status = if (mContext != null && !QbSdk.canLoadX5(mContext)) {
+        if (!QbSdk.canLoadX5(mContext)) {
             QbSdk.reset(mContext)
-            X5Status.START
-        } else {
-            X5Status.DONE
         }
     }
 
     /**
      * Send a message to Flutter.
-     *
-     * Realize the monitoring of X5 kernel initialization state
      */
-    private fun handleMessage(handler: Handler) {
+    private fun runMainThread(obj: Int, method: String) {
         val message = handler.obtainMessage()
+
+        val bundle = Bundle()
+        bundle.putString("method", method)
+        bundle.putInt("value", obj)
+        message.data = bundle
+
         handler.sendMessage(message)
     }
 
@@ -117,26 +152,19 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         override fun dispatchMessage(msg: Message) {
             super.dispatchMessage(msg)
 
-            channel.invokeMethod("x5Status", x5Status)
+            channel.invokeMethod(msg.data.getString("method") ?: "", msg.data.getInt("value"))
         }
     }
 
-    private val onQbSdkPreInitCallback: QbSdk.PreInitCallback = object : QbSdk.PreInitCallback {
-        override fun onCoreInitFinished() {
-            Log.i(TAG, "TBS kernel initialized")
-        }
-
-        override fun onViewInitFinished(b: Boolean) {
-            x5Status = if (b) X5Status.DONE else X5Status.ERROR
-            handleMessage(handler)
-            if (!b) {
-                resetQbSdk()
-            }
-            Log.i(
-                TAG,
-                "TBS kernel initialization" + showStatus(b) + " - " + QbSdk.canLoadX5(mContext)
-            )
-        }
+    /**
+     * Send a message to Flutter.
+     *
+     * Realize the monitoring of X5 kernel initialization state.
+     */
+    private fun handleX5StatusMessage(status: X5Status, msg: String) {
+        x5Status = status
+        runMainThread(status.value, method = "x5Status")
+        Log.i(TAG, msg)
     }
 
     /**
@@ -152,34 +180,13 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
      *
      * @return x5Status
      */
-    private val nowX5Status: Int
+    private val currentX5Status: Int
         get() {
             Log.i(TAG, "Get the loaded state of the kernel - $x5Status")
-            return x5Status
+            return x5Status.value
         }
 
-    /**
-     * Manual initialization
-     */
-    private fun manualInitX5() {
-        if (mContext == null) {
-            return
-        }
-
-        // Initializing / Kernel Loading Complete / Downloading Complete / Downloading / Other Status, no need to repeat
-        // Only handle uninitialized / failed to initialize / failed to download
-        if (x5Status == X5Status.NONE) {
-            x5Start()
-        } else if (x5Status == X5Status.ERROR) {
-            if (!QbSdk.canLoadX5(mContext)) {
-                x5Start()
-            }
-        } else if (x5Status == X5Status.DOWNLOAD_FAIL) {
-            TbsDownloader.startDownload(mContext)
-        }
-    }
-
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPluginBinding) {
+    override fun onDetachedFromEngine(binding: FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
         mFlutterPluginBinding = null
         mContext = null
@@ -196,8 +203,9 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         // Register here due to TbsReaderView problem.
         if (mFlutterPluginBinding != null) {
             mFlutterPluginBinding!!.platformViewRegistry.registerViewFactory(
-                viewName,
-                LocalFileViewerFactory(binding.activity, mFlutterPluginBinding!!.binaryMessenger)
+                viewName, FileViewFactory(
+                    mContext = binding.activity, messenger = mFlutterPluginBinding!!.binaryMessenger
+                )
             )
         }
     }

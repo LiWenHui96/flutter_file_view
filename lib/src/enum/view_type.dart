@@ -5,23 +5,20 @@
 
 enum ViewType {
   /// Not initialized
-  none,
+  NONE,
+
+  /// File is being downloaded or written
+  LOADING,
 
   /// Unsupported platform
-  unsupported_platform,
+  UNSUPPORTED_PLATFORM,
 
   /// Nonexistent file
-  non_existent,
+  NON_EXISTENT,
 
   /// Unsupported file type
-  unsupported_type,
-
-  /// X5 initializing
-  engine_loading,
-
-  /// X5 Initialization failed
-  engine_fail,
+  UNSUPPORTED_FILETYPE,
 
   /// Successfully opened file
-  done
+  DONE,
 }

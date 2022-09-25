@@ -1,6 +1,6 @@
 import UIKit
 
-class LocalFileViewerFactory: NSObject, FlutterPlatformViewFactory {
+class FileViewFactory: NSObject, FlutterPlatformViewFactory {
   var _messenger: FlutterBinaryMessenger?
   
   init(messenger: FlutterBinaryMessenger) {
@@ -13,6 +13,6 @@ class LocalFileViewerFactory: NSObject, FlutterPlatformViewFactory {
   }
     
   func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
-    return LocalFileViewer(withFrame: frame, viewIdentifier: viewId, arguments: args, binaryMessenger: _messenger!)
+    return FileView(withFrame: frame, viewIdentifier: viewId, arguments: args, binaryMessenger: _messenger!)
   }
 }

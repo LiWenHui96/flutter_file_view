@@ -1,7 +1,7 @@
 import UIKit
 import WebKit
 
-class LocalFileViewer: NSObject, FlutterPlatformView {
+class FileView: NSObject, FlutterPlatformView {
 
   var _webView: WKWebView?
   var _xlsWebView: WKWebView?

@@ -9,15 +9,12 @@ import io.flutter.plugin.platform.PlatformViewFactory
 /**
  * @author LiWeNHuI
  * @date 2022/2/15
- * @describe LocalFileViewFactory
+ * @describe FileViewFactory
  */
-class LocalFileViewerFactory(
-    private val mContext: Context,
-    private val messenger: BinaryMessenger
-) :
+class FileViewFactory(private val mContext: Context, val messenger: BinaryMessenger) :
     PlatformViewFactory(StandardMessageCodec.INSTANCE) {
     override fun create(context: Context?, viewId: Int, args: Any?): PlatformView {
         val params = args as Map<String, Any>
-        return LocalFileViewer(mContext, messenger, viewId, params)
+        return FileView(context = mContext, messenger = messenger, viewId = viewId, args = params)
     }
 }

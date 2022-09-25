@@ -5,49 +5,65 @@ package com.file.view
  * @date 2022/2/14
  * @describe Loading state of the X5 kernel
  */
-object X5Status {
+enum class X5Status(val value: Int) {
     /**
      * Not initialized
      */
-    const val NONE = 0
+    NONE(0),
 
     /**
      * Ready to start initializing
      */
-    const val START = 1
+    START(1),
 
     /**
      * Initialization complete
      */
-    const val DONE = 10
+    DONE(10),
 
     /**
      * Initialization exception
      */
-    const val ERROR = 11
+    ERROR(11),
 
     /**
+     * TbsCommonCode == 100
+     *
      * Download successful
      */
-    const val DOWNLOAD_SUCCESS = 20
+    DOWNLOAD_SUCCESS(20),
 
     /**
      * Download failed
      */
-    const val DOWNLOAD_FAIL = 21
+    DOWNLOAD_FAIL(21),
 
     /**
      * Downloading
      */
-    const val DOWNLOADING = 22
+    DOWNLOADING(22),
+
+    /**
+     * TbsCommonCode == 110
+     *
+     * Non-required downloads
+     */
+    DOWNLOAD_NON_REQUIRED(23),
+
+    /**
+     * TbsCommonCode == 127
+     *
+     * The number of downloads initiated more than 1 time (only one download is allowed to be initiated for a process)
+     */
+    DOWNLOAD_OUT_OF_ONE(24),
 
     /**
      * Installation succeeded
      */
-    const val INSTALL_SUCCESS = 30
+    INSTALL_SUCCESS(30),
 
     /**
      * Installation failed
      */
-    const val INSTALL_FAIL = 31
+    INSTALL_FAIL(31);
 }

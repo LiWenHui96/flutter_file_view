@@ -1,60 +1,70 @@
-/// @Describe: Loading state of the X5 kernel
+/// @Describe: The state of X5 kernel.
 ///
 /// @Author: LiWeNHuI
-/// @Date: 2022/2/15
+/// @Date: 2022/9/11
 
 enum X5Status {
   /// Not initialized
-  none,
+  NONE,
 
   /// Ready to start initializing
-  start,
+  START,
 
   /// Initialization complete
-  done,
+  DONE,
 
   /// Initialization exception
-  error,
+  ERROR,
 
   /// Download successful
-  download_success,
+  DOWNLOAD_SUCCESS,
 
   /// Download failed
-  download_fail,
+  DOWNLOAD_FAIL,
 
   /// Downloading
-  downloading,
+  DOWNLOADING,
+
+  /// Non-required downloads
+  DOWNLOAD_NON_REQUIRED,
+
+  /// The number of downloads initiated more than 1 time
+  DOWNLOAD_OUT_OF_ONE,
 
   /// Installation succeeded
-  install_success,
+  INSTALL_SUCCESS,
 
   /// Installation failed
-  install_fail
+  INSTALL_FAIL
 }
 
+/// Extension class for [X5Status].
 extension X5StatusExtension on X5Status {
+  /// get enumeration value
   static X5Status getType(int i) {
     switch (i) {
-      case 0:
-        return X5Status.none;
       case 1:
-        return X5Status.start;
+        return X5Status.START;
       case 10:
-        return X5Status.done;
+        return X5Status.DONE;
       case 11:
-        return X5Status.error;
+        return X5Status.ERROR;
       case 20:
-        return X5Status.download_success;
+        return X5Status.DOWNLOAD_SUCCESS;
       case 21:
-        return X5Status.download_fail;
+        return X5Status.DOWNLOAD_FAIL;
       case 22:
-        return X5Status.downloading;
+        return X5Status.DOWNLOADING;
+      case 23:
+        return X5Status.DOWNLOAD_NON_REQUIRED;
+      case 24:
+        return X5Status.DOWNLOAD_OUT_OF_ONE;
       case 30:
-        return X5Status.install_success;
+        return X5Status.INSTALL_SUCCESS;
       case 31:
-        return X5Status.install_fail;
+        return X5Status.INSTALL_FAIL;
       default:
-        return X5Status.none;
+        return X5Status.NONE;
     }
   }
 }
