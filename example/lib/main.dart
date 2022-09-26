@@ -50,14 +50,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<String> files = [
-    'docx.docx',
-    'doc.doc',
-    'xlsx.xlsx',
-    'xls.xls',
-    'pptx.pptx',
-    'ppt.ppt',
-    'pdf.pdf',
-    'txt.txt',
+    'FileTest.docx',
+    'FileTest.doc',
+    'FileTest.xlsx',
+    'FileTest.xls',
+    'FileTest.pptx',
+    'FileTest.ppt',
+    'FileTest.pdf',
+    'FileTest.txt',
   ];
 
   @override
