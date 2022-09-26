@@ -192,7 +192,7 @@ class _FileViewState extends State<FileView> {
           creationParamsCodec: const StandardMessageCodec(),
         );
       case X5Status.ERROR:
-        return showX5RetryWidget(local.engineFail);
+        return showTipWidget(local.engineFail);
       case X5Status.DOWNLOAD_SUCCESS:
         return showX5TipWidget(local.engineDownloadSuccess);
       case X5Status.DOWNLOAD_FAIL:

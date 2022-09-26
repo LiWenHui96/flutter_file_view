@@ -42,7 +42,7 @@ analyzer:
     # Turned off until null-safe rollout is complete.
     unnecessary_null_comparison: info
   exclude:
-  # Ignore protoc generated files
+    # Ignore protoc generated files
 
 # This list is derived from the list of all available lints located at
 # https://github.com/dart-lang/linter/blob/master/example/all.yaml

@@ -107,7 +107,7 @@ class FileViewLocalizations extends FileViewLocalizationsBase {
       'nonExistentTip': 'Non-existent file.',
       'unSupportedType': 'Does not support opening files of type %s.',
       'retry': 'Retry',
-      'engineFail': 'Failed to initialize engine, please try again.',
+      'engineFail': 'Failed to initialize engine.',
       'engineDownloadSuccess':
           'Engine download is complete, please wait for installation.',
       'engineDownloadFail': 'Engine download failed, please try again.',
@@ -126,7 +126,7 @@ class FileViewLocalizations extends FileViewLocalizationsBase {
       'nonExistentTip': '文件不存在',
       'unSupportedType': '不支持打开%s类型的文件',
       'retry': '重试',
-      'engineFail': '引擎初始化失败，请重试',
+      'engineFail': '引擎初始化失败',
       'engineDownloadSuccess': '引擎下载完成，请等待安装',
       'engineDownloadFail': '引擎下载失败，请重试',
       'engineDownloading': '引擎下载中，请稍候',
