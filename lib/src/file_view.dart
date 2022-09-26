@@ -80,6 +80,13 @@ class _FileViewState extends State<FileView> {
     widget.controller.removeListener(_listener);
   }
 
+  @override
+  void dispose() {
+    FlutterFileView.currentAndroidViewNumber = 0;
+
+    super.dispose();
+  }
+
   void _listener() {
     setState(() {});
   }
@@ -215,6 +222,10 @@ class _FileViewState extends State<FileView> {
           CircularProgressIndicator(
             key: ValueKey<String>('FileView_${hashCode}_X5_Placeholder'),
             value: widget.controller.value.progressValue,
+            color: Theme.of(context).primaryColor,
+            backgroundColor: widget.controller.value.progressValue != null
+                ? Theme.of(context).primaryColorLight
+                : null,
           ),
           const SizedBox(height: 20),
           Text(tip, style: widget.tipTextStyle),
@@ -232,6 +243,7 @@ class _FileViewState extends State<FileView> {
           const SizedBox(height: 8),
           ElevatedButton(
             onPressed: () {
+              FlutterFileView.init();
               widget.controller.initializeForAndroid();
             },
             child: Text(local.retry, style: widget.tipTextStyle),
@@ -402,10 +414,6 @@ class FileViewController extends ValueNotifier<FileViewValue> {
     value = value.copyWith(x5status: x5Status);
 
     if (x5Status != X5Status.DONE) {
-      if (x5Status == X5Status.NONE) {
-        FlutterFileView.init();
-      }
-
       x5StatusListener = FlutterFileView.initController.listen((_) {
         if (_ == X5Status.DOWNLOADING) {
           downloadListener = FlutterFileView.downlodController.listen((__) {
@@ -413,6 +421,12 @@ class FileViewController extends ValueNotifier<FileViewValue> {
           });
         } else {
           value = value.copyWith(x5status: _);
+        }
+
+        if (_ == X5Status.INSTALL_SUCCESS) {
+          Future<void>.delayed(const Duration(seconds: 10), () {
+            value = value.copyWith(x5status: X5Status.ERROR);
+          });
         }
       });
     }

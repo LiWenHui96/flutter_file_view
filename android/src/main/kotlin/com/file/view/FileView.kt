@@ -17,7 +17,7 @@ import java.io.File
 /**
  * @author LiWeNHuI
  * @date 2022/2/15
- * @describe LocalFileView
+ * @describe FileView
  */
 class FileView internal constructor(
     context: Context,
@@ -29,8 +29,7 @@ class FileView internal constructor(
     private var mContext: Context
     private var mArgs: Map<String, Any>
 
-    private val tempPrefixPath =
-        context.cacheDir.toString() + File.separator + "TbsFileReaderTmp" + File.separator + viewId
+    private val tempPrefixPath = context.cacheDir.toString() + File.separator + "TbsFileReaderTmp"
 
     private var mFrameLayout: FrameLayout? = null
     private var mTbsReaderView: TbsReaderView? = null
