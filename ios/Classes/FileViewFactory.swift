@@ -1,3 +1,10 @@
+//
+//  FileViewFactory.swift
+//  flutter_file_view
+//
+//  Created by LiWeNHuI on 2021/10/22.
+//
+
 import UIKit
 
 class FileViewFactory: NSObject, FlutterPlatformViewFactory {

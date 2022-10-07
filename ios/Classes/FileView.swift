@@ -1,38 +1,42 @@
+//
+//  FileView.swift
+//  flutter_file_view
+//
+//  Created by LiWeNHuI on 2021/10/22.
+//
+
 import UIKit
-import WebKit
 
 class FileView: NSObject, FlutterPlatformView {
 
-  var _webView: WKWebView?
-  var _xlsWebView: WKWebView?
-  
-  let xlsJsString = """
-      var script = document.createElement('meta');\
-      script.name = 'viewport';\
-      script.content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=yes";\
-      document.getElementsByTagName('head')[0].appendChild(script);
-      """
-
-  var fileType: String = ""
+  var wkWebView: FileViewWKWebView
   
   init(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?, binaryMessenger messenger: FlutterBinaryMessenger) {
+    let args = args as! [String: String]
+    
+    self.wkWebView = FileViewWKWebView.init(frame: frame, fileType: args["fileType"]!.lowercased())
+    
     super.init()
     
-    let args = args as! [String: String]
-    self.fileType = args["fileType"]!
-    
-    self._webView = WKWebView.init(frame: frame)
-
-    let configuration = WKWebViewConfiguration()
-    let userScript = WKUserScript(source: xlsJsString, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
-    configuration.userContentController.addUserScript(userScript)
-    self._xlsWebView = WKWebView.init(frame: frame, configuration: configuration)
-    
-    self.openFile(filePath: args["filePath"]!, webView: self.isXls() ? self._xlsWebView! : self._webView!)
+    self.openFile(filePath: args["filePath"]!, webView: self.wkWebView)
   }
   
-  func openFile(filePath: String, webView: WKWebView)  {
+  func openFile(filePath: String, webView: FileViewWKWebView)  {
     let url = URL.init(fileURLWithPath: filePath)
+
+    // 先进行NSUTF8StringEncoding编码
+    var body = try? String(contentsOf: url, encoding: String.Encoding.utf8)
+    if (body == nil) {
+      // 如果没有编码成功再尝试GB_18030_2000编码
+      let encode = CFStringConvertEncodingToNSStringEncoding(UInt32(CFStringEncodings.GB_18030_2000.rawValue))
+      let encoding = String.Encoding.init(rawValue: encode)
+      body = try? String(contentsOf: url, encoding: encoding)
+    }
+
+    if let body = body {
+      webView.loadHTMLString(body, baseURL: nil)
+      return
+    }
     
     if #available(iOS 9.0, *) {
       webView.loadFileURL(url, allowingReadAccessTo: url)
@@ -42,16 +46,7 @@ class FileView: NSObject, FlutterPlatformView {
     }
   }
   
-  func isXls() -> Bool {
-    let type = fileType.lowercased()
-    return type == "xls" || type == "xlsx"
-  }
-  
   func view() -> UIView {
-    if (isXls()) {
-      return _xlsWebView!
-    } else {
-      return _webView!
-    }
+    return wkWebView
   }
 }
