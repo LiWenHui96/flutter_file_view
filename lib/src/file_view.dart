@@ -271,7 +271,7 @@ class FileViewController extends ValueNotifier<FileViewValue> {
     this.dataSource, {
     this.package,
     this.androidViewConfig,
-    this.isDelExist = false,
+    this.isDelExist = true,
   })  : dataSourceType = DataSourceType.asset,
         networkConfig = null,
         super(FileViewValue.uninitialized());
@@ -285,7 +285,7 @@ class FileViewController extends ValueNotifier<FileViewValue> {
     this.dataSource, {
     NetworkConfig? config,
     this.androidViewConfig,
-    this.isDelExist = false,
+    this.isDelExist = true,
   })  : dataSourceType = DataSourceType.network,
         package = null,
         networkConfig = config ?? NetworkConfig(),
@@ -295,7 +295,7 @@ class FileViewController extends ValueNotifier<FileViewValue> {
   FileViewController.file(
     File file, {
     this.androidViewConfig,
-    this.isDelExist = false,
+    this.isDelExist = true,
   })  : dataSource = file.path,
         dataSourceType = DataSourceType.file,
         package = null,
@@ -345,9 +345,6 @@ class FileViewController extends ValueNotifier<FileViewValue> {
 
     value = value.copyWith(viewType: ViewType.LOADING);
 
-    /// The file to be used later.
-    File? file;
-
     /// The name of the file.
     final String fileName = FileViewTools.getFileSaveKey(dataSource);
 
@@ -355,50 +352,59 @@ class FileViewController extends ValueNotifier<FileViewValue> {
     final String filePath =
         '${await FileViewTools.getDirectoryPath()}$fileName';
 
-    /// If the file itself exists, it will be deleted.
-    if (isDelExist && FileViewTools.fileExists(filePath)) {
-      await File(filePath).delete();
-    }
+    final String fileType = FileViewTools.getFileType(filePath);
+    value = value.copyWith(fileType: fileType);
 
-    if (dataSourceType == DataSourceType.network) {
-      final bool flag = await FileViewTools.downloadFile(
-        dataSource,
-        filePath,
-        onReceiveProgress: (int count, int total) {
-          value = value.copyWith(progressValue: count / total);
-        },
-        config: networkConfig,
-      );
+    if (FileViewTools.isSupportByType(fileType)) {
+      value = value.copyWith(filePath: filePath);
 
-      if (flag) {
-        file = File(filePath);
+      /// The file to be used later.
+      File? file;
+
+      /// If the file itself exists, it will be deleted.
+      if (isDelExist && FileViewTools.fileExists(filePath)) {
+        await File(filePath).delete();
       }
-    } else {
-      file = File(filePath)..createSync(recursive: true);
 
-      if (dataSourceType == DataSourceType.asset) {
-        final ByteData bd = await rootBundle.load(keyName);
-        await file.writeAsBytes(bd.buffer.asUint8List());
-      } else if (dataSourceType == DataSourceType.file) {
-        await file.writeAsBytes(File(dataSource).readAsBytesSync());
+      if (dataSourceType == DataSourceType.network) {
+        final bool flag = await FileViewTools.downloadFile(
+          dataSource,
+          filePath,
+          onReceiveProgress: (int count, int total) {
+            value = value.copyWith(progressValue: count / total);
+          },
+          config: networkConfig,
+        );
+
+        if (flag) {
+          file = File(filePath);
+        }
+      } else {
+        try {
+          file = File(filePath)..createSync(recursive: true);
+
+          if (dataSourceType == DataSourceType.asset) {
+            final ByteData bd = await rootBundle.load(keyName);
+            await file.writeAsBytes(bd.buffer.asUint8List());
+          } else if (dataSourceType == DataSourceType.file) {
+            await file.writeAsBytes(File(dataSource).readAsBytesSync());
+          }
+        } catch (e) {
+          file = null;
+        }
       }
-    }
 
-    if (file != null && FileViewTools.fileExists(filePath)) {
-      final String fileType = FileViewTools.getFileType(filePath);
-      value = value.copyWith(fileType: fileType);
-
-      if (FileViewTools.isSupportByType(fileType)) {
-        value = value.copyWith(viewType: ViewType.DONE, filePath: filePath);
+      if (file != null && FileViewTools.fileExists(filePath)) {
+        value = value.copyWith(viewType: ViewType.DONE);
 
         if (isAndroid) {
           await initializeForAndroid();
         }
       } else {
-        value = value.copyWith(viewType: ViewType.UNSUPPORTED_FILETYPE);
+        value = value.copyWith(viewType: ViewType.NON_EXISTENT);
       }
     } else {
-      value = value.copyWith(viewType: ViewType.NON_EXISTENT);
+      value = value.copyWith(viewType: ViewType.UNSUPPORTED_FILETYPE);
     }
   }
 
@@ -432,8 +438,19 @@ class FileViewController extends ValueNotifier<FileViewValue> {
     }
   }
 
+  /// Delete Files.
+  void deleteFile() {
+    final File file = File(value.filePath ?? '');
+
+    if (isDelExist && file.existsSync()) {
+      file.deleteSync();
+    }
+  }
+
   @override
   void dispose() {
+    deleteFile();
+
     x5StatusListener?.cancel();
     downloadListener?.cancel();
 
