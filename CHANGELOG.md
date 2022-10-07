@@ -1,3 +1,13 @@
+## 2.1.0-alpha.1
+
+* We've ushered in major changes, not just method changes, but more performance improvements.
+
+### Breaking changes
+
+* Use [FileView](lib/src/file_view.dart) instead of `LocalFileViewer`.
+* Make `NetworkFileViewer` a obsolete product.
+* For details on how to use it, see [README.md](README.md).
+
 ## 2.0.8+6
 
 * Number of retries to remove X5 installations.
