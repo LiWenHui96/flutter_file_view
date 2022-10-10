@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-import 'file_view.dart';
 import 'flutter_file_view.dart';
 
 /// @Describe: Tools

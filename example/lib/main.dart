@@ -49,7 +49,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> files = [
+  List<String> files = <String>[
     'FileTest.docx',
     'FileTest.doc',
     'FileTest.xlsx',
