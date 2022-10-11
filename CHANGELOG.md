@@ -1,3 +1,8 @@
+## 2.1.1
+
+* Upgrade the version of TBS, the current version is 44199.
+* Update README.md.
+
 ## 2.1.0
 
 * Add the loading progress of iOS.
