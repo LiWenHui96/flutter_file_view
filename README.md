@@ -125,6 +125,7 @@ Add a file named `network_security_config.xml` in `res/xml` directory, The conte
 
 ### READ
 
+- Subsequent TBS upgrades will not be performed. For details, see [TBS-文档接口TbsReaderView接口问题说明](https://doc.weixin.qq.com/doc/w3_AGoAtwbdAFw5hQq0KqWRPmmRF18F3?scode=AJEAIQdfAAo7OBDhdiAGoAtwbdAFw)
 - Not Support Google Play, Reason: [Issues 1.11](https://x5.tencent.com/docs/questions.html).
 - Running on Android emulator is not supported.
 
