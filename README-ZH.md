@@ -125,6 +125,7 @@ android:usesCleartextTraffic="true"
 
 ### 注意事项
 
+- 后续TBS将不会再有升级，具体原因请查看 [TBS-文档接口TbsReaderView接口问题说明](https://doc.weixin.qq.com/doc/w3_AGoAtwbdAFw5hQq0KqWRPmmRF18F3?scode=AJEAIQdfAAo7OBDhdiAGoAtwbdAFw)
 - 不支持Google Play，原因：[问题 1.11](https://x5.tencent.com/docs/questions.html)
 - 不支持在Android 模拟器
 
