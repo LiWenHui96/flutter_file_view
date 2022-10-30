@@ -1,3 +1,8 @@
+## 2.1.2
+
+* Fix [#15](https://github.com/LiWenHui96/flutter_file_view/issues/15). Resolve an issue with using `FileViewController.file()`.
+* Add `customFileName`, define the name of the stored file yourself.
+
 ## 2.1.1
 
 * Upgrade the version of TBS, the current version is 44199.
