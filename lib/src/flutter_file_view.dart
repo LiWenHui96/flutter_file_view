@@ -123,6 +123,7 @@ class FileViewController extends ValueNotifier<FileViewValue> {
   FileViewController.asset(
     this.dataSource, {
     this.package,
+    this.customFileName,
     this.androidViewConfig,
     this.isDelExist = true,
   })  : dataSourceType = DataSourceType.asset,
@@ -136,6 +137,7 @@ class FileViewController extends ValueNotifier<FileViewValue> {
   /// not be null.
   FileViewController.network(
     this.dataSource, {
+    this.customFileName,
     NetworkConfig? config,
     this.androidViewConfig,
     this.isDelExist = true,
@@ -147,6 +149,7 @@ class FileViewController extends ValueNotifier<FileViewValue> {
   /// Constructs a [FileViewController] preview a document from a file.
   FileViewController.file(
     File file, {
+    this.customFileName,
     this.androidViewConfig,
     this.isDelExist = true,
   })  : dataSource = file.path,
@@ -173,6 +176,9 @@ class FileViewController extends ValueNotifier<FileViewValue> {
   String get keyName =>
       package == null ? dataSource : 'packages/$package/$dataSource';
 
+  /// Define the name of the file to be stored in the cache yourself.
+  final String? customFileName;
+
   /// HTTP headers used for the request to the [dataSource].
   /// Only for [FileViewController.network].
   /// Always empty for other document types.
@@ -197,7 +203,8 @@ class FileViewController extends ValueNotifier<FileViewValue> {
     value = value.copyWith(viewType: ViewType.LOADING);
 
     /// The name of the file.
-    final String fileName = FileViewTools.getFileSaveKey(dataSource);
+    final String fileName =
+        FileViewTools.getFileSaveKey(dataSource, fileName: customFileName);
 
     /// The storage address of the file.
     final String filePath =

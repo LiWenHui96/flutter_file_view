@@ -32,8 +32,22 @@ class FileViewTools {
   /// 获取文件存储的标识。
   ///
   /// Get the key for file storage.
-  static String getFileSaveKey(String filePath) {
-    return '${base64.encode(utf8.encode(filePath))}.${getFileType(filePath)}';
+  static String getFileSaveKey(String filePath, {String? fileName}) {
+    return '${fileName ?? base64.encode(utf8.encode(getFileName(filePath)))}'
+        '.'
+        '${getFileType(filePath)}';
+  }
+
+  /// 获取文件的名称。
+  ///
+  /// Get the name of the file.
+  static String getFileName(String filePath) {
+    if (filePath.isEmpty) {
+      return '';
+    }
+
+    final int i = filePath.lastIndexOf('/');
+    return i <= -1 ? '' : filePath.substring(i + 1);
   }
 
   /// 获取文件的后缀名称。
