@@ -1,6 +1,6 @@
 name: flutter_file_view
 description: A file viewer plugin for Flutter, support local file and network link of Android, iOS.
-version: 2.1.1
+version: 2.1.2
 homepage: https://github.com/LiWenHui96
 repository: https://github.com/LiWenHui96/flutter_file_view
 issue_tracker: https://github.com/LiWenHui96/flutter_file_view/issues
