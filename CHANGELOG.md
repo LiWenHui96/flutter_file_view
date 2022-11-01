@@ -1,3 +1,8 @@
+## 2.1.3-alpha.1
+
+* Add `android.permission.WRITE_SETTINGS`.
+* Delete `android.permission.ACCESS_WIFI_STATE`, `android.permission.WRITE_EXTERNAL_STORAGE`.
+
 ## 2.1.2
 
 * Fix [#15](https://github.com/LiWenHui96/flutter_file_view/issues/15). Resolve an issue with using `FileViewController.file()`.
