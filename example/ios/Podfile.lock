@@ -1,6 +1,6 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_file_view (2.1.2):
+  - flutter_file_view (2.1.3):
     - Flutter
 
 DEPENDENCIES:
@@ -15,7 +15,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  flutter_file_view: 8836b560f8cc7f932cb41e8855f941e964f108b5
+  flutter_file_view: 808889bc17baebc7d1b997fec77ffdc3a05efe14
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
