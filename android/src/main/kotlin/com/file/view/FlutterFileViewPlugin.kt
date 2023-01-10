@@ -54,8 +54,6 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         // The status at this time is none.
         handleX5StatusMessage(status = X5Status.NONE, msg = "ready for initialization")
 
-        resetQbSdk()
-
         val canDownloadWithoutWifi: Boolean =
             call.argument<Boolean>("canDownloadWithoutWifi") ?: true
         val canOpenDex2Oat: Boolean = call.argument<Boolean>("canOpenDex2Oat") ?: true
@@ -101,37 +99,31 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             }
         })
 
-        QbSdk.initX5Environment(mContext, onQbSdkPreInitCallback)
+        QbSdk.initX5Environment(mContext, object : QbSdk.PreInitCallback {
+            override fun onCoreInitFinished() {
+                Log.i(TAG, "TBS kernel initialized")
+            }
+
+            override fun onViewInitFinished(b: Boolean) {
+                if (!b) resetQbSdk()
+
+                handleX5StatusMessage(
+                    status = if (b) X5Status.DONE else X5Status.ERROR,
+                    msg = "TBS kernel initialization" + showStatus(b)
+                )
+            }
+        })
         Log.i(
             TAG,
             "Whether the app actively disables the X5 kernel: " + QbSdk.getIsSysWebViewForcedByOuter()
         )
     }
 
-    private val onQbSdkPreInitCallback: QbSdk.PreInitCallback = object : QbSdk.PreInitCallback {
-        override fun onCoreInitFinished() {
-            Log.i(TAG, "TBS kernel initialized")
-        }
-
-        override fun onViewInitFinished(b: Boolean) {
-            if (!b) resetQbSdk()
-
-            handleX5StatusMessage(
-                status = if (b) X5Status.DONE else X5Status.ERROR,
-                msg = "TBS kernel initialization" + showStatus(b) + " - " + QbSdk.canLoadX5(
-                    mContext
-                )
-            )
-        }
-    }
-
     /**
      * Reset QbSdk
      */
     private fun resetQbSdk() {
-        if (!QbSdk.canLoadX5(mContext)) {
-            QbSdk.reset(mContext)
-        }
+        QbSdk.reset(mContext)
     }
 
     /**
