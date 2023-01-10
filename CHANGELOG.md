@@ -1,3 +1,7 @@
+## 2.1.3
+
+* Update TBS.
+
 ## 2.1.3-alpha.1
 
 * Add `android.permission.WRITE_SETTINGS`.
