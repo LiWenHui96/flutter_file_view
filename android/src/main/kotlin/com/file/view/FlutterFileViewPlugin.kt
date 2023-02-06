@@ -36,7 +36,7 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
-            "init" -> initX5Engine(call)
+            "init" -> initTbs(call)
             "x5Status" -> result.success(currentX5Status)
             "getTemporaryPath" -> result.success(mContext?.cacheDir?.path)
             else -> result.notImplemented()
@@ -44,86 +44,91 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     }
 
     /**
-     * Initialize X5 engine
+     * Initialize TBS
      */
-    private fun initX5Engine(call: MethodCall) {
-        if (mContext == null || x5Status == X5Status.DONE || x5Status == X5Status.DOWNLOAD_OUT_OF_ONE) {
+    private fun initTbs(call: MethodCall?) {
+        if (canLoadX5(mContext)) {
+            sendMessage(status = X5Status.DONE, msg = "Core Init" + showStatus(flag = true))
             return
         }
 
         // The status at this time is none.
-        handleX5StatusMessage(status = X5Status.NONE, msg = "ready for initialization")
+        sendMessage(status = X5Status.NONE, msg = "Ready to initialize.")
 
         val canDownloadWithoutWifi: Boolean =
-            call.argument<Boolean>("canDownloadWithoutWifi") ?: true
-        val canOpenDex2Oat: Boolean = call.argument<Boolean>("canOpenDex2Oat") ?: true
+            call?.argument<Boolean>("canDownloadWithoutWifi") ?: true
+        val canOpenDex2Oat: Boolean = call?.argument<Boolean>("canOpenDex2Oat") ?: true
+
+        // 在调用TBS初始化、创建WebView之前进行如下配置，以开启优化方案
+        val map = HashMap<String, Any>()
+        map[TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER] = true
+        map[TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE] = true
 
         QbSdk.setDownloadWithoutWifi(canDownloadWithoutWifi)
+        if (canOpenDex2Oat) QbSdk.initTbsSettings(map)
 
-        if (canOpenDex2Oat) {
-            // 在调用TBS初始化、创建WebView之前进行如下配置，以开启优化方案
-            val map = HashMap<String, Any>()
-            map[TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER] = true
-            map[TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE] = true
-            QbSdk.initTbsSettings(map)
-        }
+        sendMessage(status = X5Status.START, msg = "Start the initialization.")
 
-        handleX5StatusMessage(
-            status = X5Status.START, msg = "Start the initialization of X5"
-        )
+        QbSdk.initX5Environment(mContext, object : QbSdk.PreInitCallback {
+            override fun onCoreInitFinished() {
+                log(msg = "onCoreInitFinished")
+            }
+
+            override fun onViewInitFinished(b: Boolean) {
+                if (!b) {
+                    QbSdk.setDownloadWithoutWifi(canDownloadWithoutWifi)
+                    if (canOpenDex2Oat) QbSdk.initTbsSettings(map)
+
+                    QbSdk.reset(mContext)
+                }
+
+
+                sendMessage(
+                    status = if (b) X5Status.DONE else X5Status.ERROR,
+                    msg = "Core Init" + showStatus(b)
+                )
+            }
+        })
 
         QbSdk.setTbsListener(object : TbsListener {
             override fun onDownloadFinish(p0: Int) {
-                handleX5StatusMessage(
+                sendMessage(
                     status = when (p0) {
                         100 -> X5Status.DOWNLOAD_SUCCESS
                         110 -> X5Status.DOWNLOAD_NON_REQUIRED
+                        111 -> X5Status.DOWNLOAD_CANCEL_NOT_WIFI
                         127 -> X5Status.DOWNLOAD_OUT_OF_ONE
+                        133 -> X5Status.DOWNLOAD_CANCEL_REQUESTING
+                        -122 -> X5Status.DOWNLOAD_NO_NEED_REQUEST
+                        -134 -> X5Status.DOWNLOAD_FLOW_CANCEL
                         else -> X5Status.DOWNLOAD_FAIL
-                    }, msg = "TBS download complete - " + p0 + showStatus(p0 == 100)
+                    },
+                    msg = "Download completed - " + p0 + showStatus(p0 == 100),
                 )
             }
 
             override fun onInstallFinish(p0: Int) {
-                handleX5StatusMessage(
+                sendMessage(
                     status = if (p0 == 200) X5Status.INSTALL_SUCCESS else X5Status.INSTALL_FAIL,
-                    msg = "TBS installation completed - " + p0 + showStatus(p0 == 200)
+                    msg = "Installation completed - " + p0 + showStatus(p0 == 200)
                 )
             }
 
             override fun onDownloadProgress(p0: Int) {
-                handleX5StatusMessage(
-                    status = X5Status.DOWNLOADING, msg = "TBS download progress: $p0"
-                )
-                runMainThread(obj = p0, method = "x5DownloadProgress")
+                sendMessage(status = X5Status.DOWNLOADING, msg = "Download Progress: $p0%")
+                runMainThread(obj = p0, method = "X5DownloadProgress")
             }
         })
-
-        QbSdk.initX5Environment(mContext, object : QbSdk.PreInitCallback {
-            override fun onCoreInitFinished() {
-                Log.i(TAG, "TBS kernel initialized")
-            }
-
-            override fun onViewInitFinished(b: Boolean) {
-                if (!b) resetQbSdk()
-
-                handleX5StatusMessage(
-                    status = if (b) X5Status.DONE else X5Status.ERROR,
-                    msg = "TBS kernel initialization" + showStatus(b)
-                )
-            }
-        })
-        Log.i(
-            TAG,
-            "Whether the app actively disables the X5 kernel: " + QbSdk.getIsSysWebViewForcedByOuter()
-        )
     }
 
     /**
-     * Reset QbSdk
+     * Verify that X5 has been successfully loaded locally or context is not empty.
+     * 检验本地是否已成功加载了X5 or context 不为空。
+     *
+     * ⚠️ QbSdk.canLoadX5 会在后续版本删除。https://x5.tencent.com/docs/tbsapi.html
      */
-    private fun resetQbSdk() {
-        QbSdk.reset(mContext)
+    private fun canLoadX5(context: Context?): Boolean {
+        return if (context == null) false else QbSdk.canLoadX5(context)
     }
 
     /**
@@ -153,10 +158,17 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
      *
      * Realize the monitoring of X5 kernel initialization state.
      */
-    private fun handleX5StatusMessage(status: X5Status, msg: String) {
-        x5Status = status
-        runMainThread(status.value, method = "x5Status")
-        Log.i(TAG, msg)
+    private fun sendMessage(status: X5Status, msg: String) {
+        if (status != x5Status) {
+            x5Status = status
+            runMainThread(status.value, method = "x5Status")
+        }
+
+        log(msg = msg)
+    }
+
+    private fun log(msg: String) {
+        Log.d(TAG, "FlutterFileView: TBS - $msg")
     }
 
     /**
@@ -174,7 +186,7 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
      */
     private val currentX5Status: Int
         get() {
-            Log.i(TAG, "Get the loaded state of the kernel - $x5Status")
+            log(msg = "Current Status - $x5Status")
             return x5Status.value
         }
 

@@ -60,6 +60,18 @@ abstract class FileViewLocalizationsBase {
   String get engineDownloadNonRequired =>
       getItem('engineDownloadNonRequired').toString();
 
+  String get engineDownloadCancelNotWifi =>
+      getItem('engineDownloadCancelNotWifi').toString();
+
+  String get engineDownloadCancelRequesting =>
+      getItem('engineDownloadCancelRequesting').toString();
+
+  String get engineDownloadNoNeedRequest =>
+      getItem('engineDownloadNoNeedRequest').toString();
+
+  String get engineDownloadFlowCancel =>
+      getItem('engineDownloadFlowCancel').toString();
+
   String get engineDownloadOutOfOne =>
       getItem('engineDownloadOutOfOne').toString();
 
@@ -114,6 +126,14 @@ class FileViewLocalizations extends FileViewLocalizationsBase {
       'engineDownloading': 'Engine downloading, please wait.',
       'engineDownloadNonRequired':
           'The engine cannot be downloaded temporarily, please restart.',
+      'engineDownloadCancelNotWifi': 'The engine has canceled the download,'
+          ' please switch to a wireless network',
+      'engineDownloadCancelRequesting': 'The engine has canceled the download,'
+          ' please do not repeat the request.',
+      'engineDownloadNoNeedRequest': 'Engine not downloading, please try again'
+          ' later.',
+      'engineDownloadFlowCancel': 'The download of the engine has been '
+          'canceled, and the current network is abnormal.',
       'engineDownloadOutOfOne':
           'The engine has retried too many times, please restart.',
       'engineInstallSuccess':
@@ -131,6 +151,10 @@ class FileViewLocalizations extends FileViewLocalizationsBase {
       'engineDownloadFail': '引擎下载失败，请重试',
       'engineDownloading': '引擎下载中，请稍候',
       'engineDownloadNonRequired': '引擎暂时无法下载，请重启',
+      'engineDownloadCancelNotWifi': '引擎已取消下载，请改用无线网络',
+      'engineDownloadCancelRequesting': '引擎已取消下载，请勿重复请求',
+      'engineDownloadNoNeedRequest': '引擎未进行下载，请稍后重试',
+      'engineDownloadFlowCancel': '引擎已取消下载，当前网络异常',
       'engineDownloadOutOfOne': '引擎重试次数过多，请重启',
       'engineInstallSuccess': '引擎安装完成，请等待初始化',
       'engineInstallFail': '引擎安装失败，请重试',

@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'enum/view_type.dart';
+import 'enum/view_status.dart';
 import 'enum/x5_status.dart';
 import 'file_view.dart';
 import 'file_view_tools.dart';
@@ -62,11 +62,11 @@ class FlutterFileView {
     }
   }
 
-  /// 获取当前X5内核的状态。
+  /// 获取X5内核当前的状态。
   ///
   /// Get the current state of the X5 kernel.
-  static Future<X5Status> x5Status() async {
-    if (defaultTargetPlatform != TargetPlatform.android) {
+  static Future<X5Status> get x5Status async {
+    if (!isAndroid) {
       throw PlatformException(
         code: 'Unnecessary',
         details: 'The `x5Status` method of the flutter_file_view plugin is '
@@ -75,7 +75,7 @@ class FlutterFileView {
     }
 
     final int? i = await _channel.invokeMethod<int>('x5Status');
-    return X5StatusExtension.getType(i ?? -1);
+    return X5StatusExtension.getType(i);
   }
 
   /// Path to the temporary directory on the device that is not backed up and is
@@ -194,13 +194,13 @@ class FileViewController extends ValueNotifier<FileViewValue> {
   /// the document.
   Future<void> initialize() async {
     if (!(isAndroid || isIOS)) {
-      value = value.copyWith(viewType: ViewType.UNSUPPORTED_PLATFORM);
+      value = value.copyWith(viewStatus: ViewStatus.UNSUPPORTED_PLATFORM);
       return;
     }
 
     FlutterFileView._channel.setMethodCallHandler(_handler);
 
-    value = value.copyWith(viewType: ViewType.LOADING);
+    value = value.copyWith(viewStatus: ViewStatus.LOADING);
 
     /// The name of the file.
     final String fileName =
@@ -253,7 +253,7 @@ class FileViewController extends ValueNotifier<FileViewValue> {
       }
 
       if (file != null && FileViewTools.fileExists(filePath)) {
-        value = value.copyWith(viewType: ViewType.DONE);
+        value = value.copyWith(viewStatus: ViewStatus.DONE);
 
         if (isAndroid) {
           await initializeForAndroid();
@@ -261,10 +261,10 @@ class FileViewController extends ValueNotifier<FileViewValue> {
           await initializeForIOS();
         }
       } else {
-        value = value.copyWith(viewType: ViewType.NON_EXISTENT);
+        value = value.copyWith(viewStatus: ViewStatus.NON_EXISTENT);
       }
     } else {
-      value = value.copyWith(viewType: ViewType.UNSUPPORTED_FILETYPE);
+      value = value.copyWith(viewStatus: ViewStatus.UNSUPPORTED_FILETYPE);
     }
   }
 
@@ -284,7 +284,7 @@ class FileViewController extends ValueNotifier<FileViewValue> {
 
   /// Because Android uses the X5 engine, it needs to be operated separately.
   Future<void> initializeForAndroid() async {
-    final X5Status x5Status = await FlutterFileView.x5Status();
+    final X5Status x5Status = await FlutterFileView.x5Status;
     value = value.copyWith(x5status: x5Status);
 
     if (x5Status != X5Status.DONE) {
@@ -355,13 +355,13 @@ class FileViewController extends ValueNotifier<FileViewValue> {
   }
 }
 
-/// The viewType, filePath, fileType, downloadProgress, X5Status of a
+/// The viewStatus, filePath, fileType, downloadProgress, X5Status of a
 /// [FileViewController].
 class FileViewValue {
-  /// Constructs a file with the given values. Only [viewType] is required.
+  /// Constructs a file with the given values. Only [viewStatus] is required.
   /// The rest will initialize with default values when unset.
   FileViewValue({
-    required this.viewType,
+    required this.viewStatus,
     this.x5status = X5Status.NONE,
     this.filePath,
     this.fileType,
@@ -370,10 +370,10 @@ class FileViewValue {
   });
 
   /// Returns an instance for a file that hasn't been loaded.
-  FileViewValue.uninitialized() : this(viewType: ViewType.NONE);
+  FileViewValue.uninitialized() : this(viewStatus: ViewStatus.NONE);
 
   /// The loaded state of the view.
-  final ViewType viewType;
+  final ViewStatus viewStatus;
 
   /// The state of X5 kernel.
   final X5Status x5status;
@@ -393,7 +393,7 @@ class FileViewValue {
   /// Returns a new instance that has the same values as this current instance,
   /// except for any overrides passed in as arguments to [copyWith].
   FileViewValue copyWith({
-    ViewType? viewType,
+    ViewStatus? viewStatus,
     X5Status? x5status,
     String? filePath,
     String? fileType,
@@ -401,7 +401,7 @@ class FileViewValue {
     num? progressForIOS,
   }) {
     return FileViewValue(
-      viewType: viewType ?? this.viewType,
+      viewStatus: viewStatus ?? this.viewStatus,
       x5status: x5status ?? this.x5status,
       filePath: filePath ?? this.filePath,
       fileType: fileType ?? this.fileType,

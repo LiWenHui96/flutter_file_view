@@ -28,8 +28,21 @@ enum X5Status {
   /// Non-required downloads
   DOWNLOAD_NON_REQUIRED,
 
+  /// Non-Wi-Fi
+  DOWNLOAD_CANCEL_NOT_WIFI,
+
   /// The number of downloads initiated more than 1 time
   DOWNLOAD_OUT_OF_ONE,
+
+  /// During the download request, the download is not repeated and the
+  /// download is canceled
+  DOWNLOAD_CANCEL_REQUESTING,
+
+  /// No download request is initiated
+  DOWNLOAD_NO_NEED_REQUEST,
+
+  /// The bandwidth is not allowed, the download is cancelled
+  DOWNLOAD_FLOW_CANCEL,
 
   /// Installation succeeded
   INSTALL_SUCCESS,
@@ -41,7 +54,7 @@ enum X5Status {
 /// Extension class for [X5Status].
 extension X5StatusExtension on X5Status {
   /// get enumeration value
-  static X5Status getType(int i) {
+  static X5Status getType(int? i) {
     switch (i) {
       case 1:
         return X5Status.START;
@@ -58,7 +71,15 @@ extension X5StatusExtension on X5Status {
       case 23:
         return X5Status.DOWNLOAD_NON_REQUIRED;
       case 24:
+        return X5Status.DOWNLOAD_CANCEL_NOT_WIFI;
+      case 25:
         return X5Status.DOWNLOAD_OUT_OF_ONE;
+      case 26:
+        return X5Status.DOWNLOAD_CANCEL_REQUESTING;
+      case 27:
+        return X5Status.DOWNLOAD_NO_NEED_REQUEST;
+      case 28:
+        return X5Status.DOWNLOAD_FLOW_CANCEL;
       case 30:
         return X5Status.INSTALL_SUCCESS;
       case 31:

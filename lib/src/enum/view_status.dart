@@ -3,7 +3,7 @@
 /// @Author: LiWeNHuI
 /// @Date: 2022/2/15
 
-enum ViewType {
+enum ViewStatus {
   /// Not initialized
   NONE,
 
