@@ -25,7 +25,27 @@ class _FileViewPageState extends State<FileViewPage> {
       appBar: AppBar(title: const Text('文档')),
       body: Column(
         children: <Widget>[
-          Expanded(child: FileView(controller: widget.controller)),
+          Expanded(
+            child: FileView(
+              controller: widget.controller,
+              onCustomViewStatusBuilder: (_, ViewStatus status) {
+                if (status == ViewStatus.LOADING) {
+                  /// 加载中的状态布局，红色背景一闪而过。
+                  return Container(color: Colors.red);
+                }
+                
+                return null;
+              },
+              onCustomX5StatusBuilder: (_, X5Status status) {
+                if (status == ViewStatus.LOADING) {
+                  /// 加载中的状态布局，红色背景一闪而过。
+                  return Container(color: Colors.red);
+                }
+
+                return null;
+              },
+            ),
+          ),
         ],
       ),
     );

@@ -265,7 +265,7 @@ class _FileViewState extends State<FileView> {
 /// According to [status], display different layouts.
 ///
 /// In state [ViewStatus.DONE], the layout cannot be customized.
-typedef OnCustomViewStatusBuilder = Widget Function(
+typedef OnCustomViewStatusBuilder = Widget? Function(
   BuildContext context,
   ViewStatus status,
 );
@@ -273,7 +273,7 @@ typedef OnCustomViewStatusBuilder = Widget Function(
 /// According to [status], display different layouts.
 ///
 /// In state [X5Status.DONE], the layout cannot be customized.
-typedef OnCustomX5StatusBuilder = Widget Function(
+typedef OnCustomX5StatusBuilder = Widget? Function(
   BuildContext context,
   X5Status status,
 );

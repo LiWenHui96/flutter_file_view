@@ -124,11 +124,9 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     /**
      * Verify that X5 has been successfully loaded locally or context is not empty.
      * 检验本地是否已成功加载了X5 or context 不为空。
-     *
-     * ⚠️ QbSdk.canLoadX5 会在后续版本删除。https://x5.tencent.com/docs/tbsapi.html
      */
     private fun canLoadX5(context: Context?): Boolean {
-        return if (context == null) false else QbSdk.canLoadX5(context)
+        return if (context == null) false else QbSdk.isX5Core()
     }
 
     /**
