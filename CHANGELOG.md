@@ -1,3 +1,8 @@
+## 2.2.0
+
+* Add `OnCustomViewStatusBuilder`, `OnCustomX5StatusBuilder`.
+* Update TBS.
+
 ## 2.1.3
 
 * Update TBS.
