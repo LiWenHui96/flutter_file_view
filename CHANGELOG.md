@@ -1,3 +1,7 @@
+## 2.2.0+1
+
+* Add `buttonTextStyle`.
+
 ## 2.2.0
 
 * Add `OnCustomViewStatusBuilder`, `OnCustomX5StatusBuilder`.
