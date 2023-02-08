@@ -20,6 +20,7 @@ class FileView extends StatefulWidget {
     this.onCustomViewStatusBuilder,
     this.onCustomX5StatusBuilder,
     this.tipTextStyle,
+    this.buttonTextStyle,
   }) : super(key: key);
 
   /// The [FileViewController] responsible for the file being rendered in this
@@ -34,6 +35,9 @@ class FileView extends StatefulWidget {
 
   /// The style of the text for the prompt.
   final TextStyle? tipTextStyle;
+
+  /// The style of the text for button.
+  final TextStyle? buttonTextStyle;
 
   @override
   State<FileView> createState() => _FileViewState();
@@ -245,7 +249,7 @@ class _FileViewState extends State<FileView> {
               FlutterFileView.init();
               controller.initializeForAndroid();
             },
-            child: Text(local.retry, style: widget.tipTextStyle),
+            child: Text(local.retry, style: widget.buttonTextStyle),
           ),
         ],
       ),
