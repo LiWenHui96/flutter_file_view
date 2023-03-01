@@ -1,3 +1,8 @@
+## 2.2.1
+
+* TBS(44275) is the last version that supports `TbsReaderView`!
+* Delete `android.permission.WRITE_SETTINGS`.
+
 ## 2.2.0+1
 
 * Add `buttonTextStyle`.
