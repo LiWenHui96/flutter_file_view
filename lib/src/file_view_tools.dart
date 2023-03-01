@@ -21,7 +21,10 @@ class FileViewTools {
     /// 检验文件夹是否存在，若不存在则进行创建操作。
     ///
     /// Check to see if the folder exists, and create it if it doesn't.
-    await Directory(directoryPath).create(recursive: true);
+    final Directory directory = Directory(directoryPath);
+    if (!directory.existsSync()) {
+      directory.createSync(recursive: true);
+    }
 
     return directoryPath;
   }
