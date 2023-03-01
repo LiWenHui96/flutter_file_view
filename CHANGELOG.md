@@ -1,3 +1,8 @@
+## 2.2.1
+
+* Update TBS.
+* Delete `android.permission.WRITE_SETTINGS`.
+
 ## 2.2.0+1
 
 * Add `buttonTextStyle`.
