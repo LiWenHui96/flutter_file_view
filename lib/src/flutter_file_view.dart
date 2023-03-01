@@ -300,12 +300,6 @@ class FileViewController extends ValueNotifier<FileViewValue> {
         } else {
           value = value.copyWith(x5status: _);
         }
-
-        if (_ == X5Status.INSTALL_SUCCESS) {
-          Future<void>.delayed(const Duration(seconds: 10), () {
-            value = value.copyWith(x5status: X5Status.ERROR);
-          });
-        }
       });
     }
   }
