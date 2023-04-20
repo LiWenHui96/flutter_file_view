@@ -89,6 +89,8 @@ class FlutterFileViewPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 )
             }
         })
+        
+        QbSdk.setTbsListener(new TbsListener() {@Overridepublic void onDownloadFinish(int i) {}@Overridepublic void onInstallFinish(int i) {Log.e(TAG, "onInstallFinish: 内核下载成功" );}@Overridepublic void onDownloadProgress(int i) {}});boolean needDownload = TbsDownloader.needDownload(this, TbsDownloader.DOWNLOAD_OVERSEA_TBS);Log.e(TAG, "onCreate: "+needDownload );if (needDownload) {TbsDownloader.startDownload(this);}
 
         QbSdk.setTbsListener(object : TbsListener {
             override fun onDownloadFinish(p0: Int) {
