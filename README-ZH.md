@@ -15,6 +15,9 @@ Language: 中文 | [English](README.md)
 * Android `docx,doc,xlsx,xls,pptx,ppt,pdf,txt`
 * iOS `docx,doc,xlsx,xls,pptx,ppt,pdf,txt`
 
+### screenshot
+![Alt text](screenshots/pptx.png)
+
 ## ⏰ 初始化
 
 ```dart
