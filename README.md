@@ -15,6 +15,9 @@ Language: [中文](README-ZH.md) | English
 * Android `docx,doc,xlsx,xls,pptx,ppt,pdf,txt`
 * iOS `docx,doc,xlsx,xls,pptx,ppt,pdf,txt`
 
+### screenshot
+![Alt text](screenshots/pptx.png)
+
 ## ⏰ Init
 
 ```dart
@@ -130,3 +133,4 @@ Add a file named `network_security_config.xml` in `res/xml` directory, The conte
 - Running on Android emulator is not supported.
 
 > If you like my project, please in the upper right corner of the project "Star". Your support is my biggest encouragement! ^_^
+
